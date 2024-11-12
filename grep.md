@@ -29,4 +29,5 @@ cat /etc/services | grep  "s$"
 
 ```
 grep -r "PermitRootLogin" /etc
+grep -irn "PermitRootLogin" /etc
 ```
