@@ -21,3 +21,11 @@ cd etc
 cd /etc 
 ```
 
+## Ins alte Verzeichnis wechseln 
+
+```
+cd /var/log
+cd /etc
+# Wechselt in /var/log zurück 
+cd -
+```
