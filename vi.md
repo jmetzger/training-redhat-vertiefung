@@ -24,7 +24,7 @@ vimtutor # sollte bereits mit vi installiert worden sein.
 ## Wichtigste Aktionen 
 
 ```
-  1. # Öffnen eine neuer Datei mit vi 
+  1. # Öffnen einer neuer Datei mit vi 
   vi dateiname 
   
   2. # Schreiben in der Datei 
