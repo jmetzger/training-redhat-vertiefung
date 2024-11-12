@@ -17,8 +17,8 @@
   1. Erweiterte Befehle (Nice to have) 
      * [Alias Befehle anzeigen](alias.md)
      * [Welche Bibliotheken verwendet ein ausführbares Programm](ldd.md)
-     * [Ist ein Befehl extern, alias oder intern](type.mdd) 
-
+     * [Ist ein Befehl extern, alias oder intern](type.md)
+     * [History verwenden](history.md) 
   1. Dateien und Verzeichnisse
      * [Mit cd im System navigieren](cd.md)
      * [Verzeichnisse in Listenansicht mit versteckten Dateien anzeigen -> ls -la](list.md)
@@ -26,8 +26,7 @@
      * [Verzeichnisse anlegen](mkdir.md)
      * [Verzeichnisse und Dateien löschen](file-dir-delete.md)
      * [Kopieren/Verschieben/Umbenennen von Dateien und Files](file-rename-copy-mv.md) 
-     * [Arbeiten mit vi](vi.md)
-  
+     * [Arbeiten mit vi](vi.md)  
   1. Dateimanipulation/Unix Tools
      * [Anfang oder Ende einer Datei/Ausgabe anzeigen](head-tail.md)
      * [cat/head/tail-Beginn/Ende einer Datei anzeigen](cat-head.md)
