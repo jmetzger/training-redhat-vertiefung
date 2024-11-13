@@ -44,6 +44,13 @@ tar xvf _etc.20220617.tar.gz etc/sysctl.d/99-sysctl.conf etc/services
 ls -la
 ```
 
+## Entpacken (Variante 3) - direkt in ein bestimmtes Verzeichnhis
+
+```
+tar xvf _etc.20220617.tar.gz -C / etc/sysctl.d/99-sysctl.conf etc/services
+
+```
+
 
 ## Referenz:
 
