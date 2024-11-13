@@ -86,7 +86,8 @@
      * [Aktualisierung des Systems](dnf-update.md)
      * [Paketmanager dnf](dnf.md)
      * [Archive runterladen und entpacken](tar-download.md)
-     * [Apache installieren (firewall und selinux)](apache-installieren-selinux-firewalld.md) 
+     * [Apache installieren (firewall und selinux)](apache-installieren-selinux-firewalld.md)
+     * [mbr sichern mit dd](dd-mbr.md)
   1. Firewall und ports
      * [firewalld](firewalld.md)
      * [Scannen und Überprüfen mit telnet/nmap](nmap-telnet.md)
