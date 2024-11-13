@@ -35,3 +35,5 @@ dnf search mariadb
 ## Infos zu einem Paket abrufen 
 
 ```
+dnf info mariadb
+```
