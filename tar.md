@@ -5,6 +5,8 @@
 ```
 cd /usr/src
 tar cfvz _etc.20220617.tar.gz /etc
+# war das archivieren erfolgreich // dann 0 
+echo $? 
 tar tf _etc.20220617.tar.gz
 ```
 
