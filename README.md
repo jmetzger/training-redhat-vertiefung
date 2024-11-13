@@ -35,6 +35,7 @@
      * [Bestimmte Zeilen aus Datei anzeigen - grep](grep.md)
      * [Erweiterte Suche mit Grep](grep-extended.md)
      * [Finden von files nach Kriterien - find](find.md)
+     * [Doppelte Leerzeichen aus Zeile rauslöschen](tr.md)
   
   1. Prozesse 
      * [Prozesse anzeigen - ps/pstree -p](prozesse.md)
