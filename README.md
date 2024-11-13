@@ -82,7 +82,7 @@
      * [X-Server - Ausgabe auf Windows umleiten](xserver-windows-client.md)
      * [Installations-Images-Server](https://ubuntu.com/download/server#download) 
   1. Wartung und Aktualisierung
-     * [Aktualisierung des Systems](update-upgrade.md)
+     * [Aktualisierung des Systems](dnf-update.md)
      * [Paketmanager dnf](dnf.md)
      * [Archive runterladen und entpacken](tar-download.md)
      * [Apache installieren (firewall und selinux)](apache-installieren-selinux-firewalld.md) 
