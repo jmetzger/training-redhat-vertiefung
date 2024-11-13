@@ -36,6 +36,7 @@
      * [Erweiterte Suche mit Grep](grep-extended.md)
      * [Finden von files nach Kriterien - find](find.md)
      * [Doppelte Leerzeichen aus Zeile rauslöschen](tr.md)
+     * [Spalten auslesen mit awk](awk.md)
 
   1. Backups
      * [Backup / Restore with tar](tar.md)
