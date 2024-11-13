@@ -47,8 +47,8 @@ ls -la
 ## Entpacken (Variante 3) - direkt in ein bestimmtes Verzeichnhis
 
 ```
+tar tf _etc.20220617.tar.gz
 tar xvf _etc.20220617.tar.gz -C / etc/sysctl.d/99-sysctl.conf etc/services
-
 ```
 
 
