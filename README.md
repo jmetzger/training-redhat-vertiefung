@@ -41,6 +41,9 @@
      * [Backup / Restore with tar](tar.md)
      * [Backup with tar / zstd](tar-zstd.md)
 
+  1. Komprimierung
+     * [Datei komprimieren](gzip.md)
+
   1. Prozesse 
      * [Prozesse anzeigen - ps/pstree -p](prozesse.md)
      * [Alle Prozesse eines Dienstes anzeigen](prozesse-dienst.md)
