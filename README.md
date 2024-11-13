@@ -83,7 +83,7 @@
      * [Installations-Images-Server](https://ubuntu.com/download/server#download) 
   1. Wartung und Aktualisierung
      * [Aktualisierung des Systems](update-upgrade.md)
-     * [Paketmanager yum](yum.md)
+     * [Paketmanager dnf](dnf.md)
      * [Archive runterladen und entpacken](tar-download.md)
      * [Apache installieren (firewall und selinux)](apache-installieren-selinux-firewalld.md) 
   1. Firewall und ports
@@ -117,5 +117,8 @@
   1. Literatur 
      * [Literatur](literatur.md) 
 
+## Backlog 
 
+  1. Wartung und Aktualisierung
+     * [Paketmanager yum](yum.md)
 
