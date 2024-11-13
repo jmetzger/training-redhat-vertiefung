@@ -36,17 +36,19 @@
      * [Erweiterte Suche mit Grep](grep-extended.md)
      * [Finden von files nach Kriterien - find](find.md)
      * [Doppelte Leerzeichen aus Zeile rauslöschen](tr.md)
-  
+
+  1. Backups
+     * [Backup / Restore with tar](tar.md)
+     * [Backup with tar / zstd](tar-zstd.md)
+
   1. Prozesse 
      * [Prozesse anzeigen - ps/pstree -p](prozesse.md)
      * [Alle Prozesse eines Dienstes anzeigen](prozesse-dienst.md)
-
   1. Benutzer, Gruppen und Rechte 
      * [Rechte](rechte.md) 
      * [Dateien für Benutzer und Gruppen](files-users-groups.md) 
      * [Benutzer anlegen](create-users.md) 
-     * [sudo Benutzer erstellen](mod-user-sudo.md) 
-  
+     * [sudo Benutzer erstellen](mod-user-sudo.md)   
   1. Logs/Loganalyse
      * [Logfile beobachten](tailf.md)
      * [Dienste debuggen](debug-service.md)
@@ -59,17 +61,13 @@
      * [Systemctl - timers](systemctl-timers.md)
      * [Gegenüberstellung service etc/init.d/ systemctl](service-initd-systemctl.md)
      * [Default Editor systemctl setzen](default-editor-systemctl.md) 
-
   1. Systemd 
      * [Die wichtigen Tools für die Kommandozeile (ctl)](systemd-cli-tools.md)
-
   1. Firewall
      * [Arbeiten mit firewalld](firewalld.md)
-
   1. Systemadministration 
      * [Hostname setzen/abfragen](hostnamectl.md) 
      * [ssh absichern](ssh-absichern.md)
-
   1. Partitionierung und Filesystem
      * [parted and mkfs.ext4](parted-mkfs.md)
   1. Boot-Prozess und Kernel 
