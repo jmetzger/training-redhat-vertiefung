@@ -83,8 +83,13 @@ exit
 ### Step 3: in 2. Session - prüfen ob es noch läuft 
 
 ```
+sudo su  -
+```
+
+```
 # ja, es läuft
 ps aux | grep endless
+tail nohup.out
 ```
 
 
