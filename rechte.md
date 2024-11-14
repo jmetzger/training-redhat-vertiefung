@@ -1,4 +1,4 @@
-# Rechte 
+# Rechte / Besitzer / Gruppe 
 
 ## Arten 
 
@@ -48,3 +48,37 @@ chmod 777 testfile
 ```
 chmod -R 777 testverzeichnis 
 ```
+
+## Besitzer ändern (nur als root) 
+
+```
+ls -la datei5
+-rw-r--r--. 1 kurs kurs 0 14. Nov 11:06 datei5
+```
+
+```
+sudo chown root datei5
+```
+
+## Gruppe ändern (nur als root) 
+
+```
+ls -la datei5
+-rw-r--r--. 1 kurs kurs 0 14. Nov 11:06 datei5
+```
+
+```
+sudo chown :root datei5
+```
+
+## Besitzer und Gruppe ändern (nur als root) 
+
+```
+ls -la datei5
+-rw-r--r--. 1 kurs kurs 0 14. Nov 11:06 datei5
+```
+
+```
+sudo chown root:root datei5
+```
+
