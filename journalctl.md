@@ -40,5 +40,5 @@ SystemMaxUse=1G
 
 ```
 # ubuntu
-journalctl -u ssh 
+journalctl -u sshd 
 ```
