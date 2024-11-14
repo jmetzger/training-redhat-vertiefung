@@ -91,7 +91,7 @@ lrwxrwxrwx 1 root root 16 Jan  6 20:47 runlevel5.target -> graphical.target
 lrwxrwxrwx 1 root root 13 Jan  6 20:47 runlevel6.target -> reboot.target
 ```
 
-## Welche Dienste sind aktiviert/deaktiviert 
+## Welche Dienste sind enabled (preset) und auf dem System 
 ```
 systemctl list-unit-files -t service
 ```
