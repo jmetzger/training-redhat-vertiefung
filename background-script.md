@@ -80,7 +80,7 @@ nohup endless.sh &
 exit
 ```
 
-### Step 4: in 2. Session - prüfen ob es noch läuft 
+### Step 3: in 2. Session - prüfen ob es noch läuft 
 
 ```
 # ja, es läuft
