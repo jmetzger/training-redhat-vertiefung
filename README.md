@@ -48,6 +48,8 @@
      * [Prozesse anzeigen - ps/pstree -p](prozesse.md)
      * [Alle Prozesse eines Dienstes anzeigen](prozesse-dienst.md)
      * [Prozesse im Hintergrund laufen lasen](background-script.md)
+  1. Festplattenbelegung
+     * [Welche Verzeichnisse / Partitionen sind voll? du und df](df-du.md)  
   1. Benutzer, Gruppen und Rechte 
      * [Rechte/Benutzer/Gruppe](rechte.md) 
      * [Dateien für Benutzer und Gruppen](files-users-groups.md) 
