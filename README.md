@@ -59,7 +59,9 @@
      * [Logfile beobachten](tailf.md)
      * [Dienste debuggen](debug-service.md)
      * [Rsyslog](rsyslog.md)
-     * [Journal analysieren](journalctl.md) 
+     * [Journal analysieren](journalctl.md)
+  1. Dienste debuggen
+     * [Dienste debuggen](debug-service.md)
   1. Variablen
      * [Setzen und verwenden von Variablen](variables.md) 
   1. Dienste/Runlevel(Targets verwalten) 
