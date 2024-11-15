@@ -63,11 +63,6 @@ IOSchedulingClass=idle
 
 ```
 
-## Example Reference 
-
-
-  * https://www.tutorialdocs.com/article/systemd-timer-tutorial.html
-
 
 ## Personal Timer (timer for user) 
 
