@@ -10,7 +10,7 @@ systemctl restart mariadb.service
 systemctl status mariadb.service 
 
 # Nicht fündig-> Schritt 2:
-jourrnalctl -xe
+journalctl -eu mariadb.service
 
 # Nicht fündig -> Schritt 3:
 # -e springt ans Ende des Pages
