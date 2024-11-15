@@ -102,13 +102,7 @@
      * [Interface mit nmtu-edit verwalten - schneller Weg](nmtui-edit.md)
      * [Netzwerkinterface auf der Kommandozeile einrichten](nmcli.md) 
      * [Scannen mit nmap](nmap.md)
-  1. Podman 
-     * [Podman Walkthrough](podman.md) 
-  1. SELinux (Linux härten)
-     * [SELinux](selinux.md)
-  1. Tools/Verschiedens 
-     * [Remote Desktop für Linux / durch Teilnehmer getestet](https://wiki.ubuntuusers.de/Remmina/)
-     * [Warum umask 002 und 0002 ? - Geschichte](umask-002-022-why.md)
+  1. Mails
      * [lokale Mails installieren](local-mail.md)
   1. Bash/Bash-Scripting 
      * [Einfaches Script zur Datumsausgabe](script-date.md) 
@@ -129,3 +123,12 @@
   1. Wartung und Aktualisierung
      * [Paketmanager yum](yum.md)
 
+  1. Podman 
+     * [Podman Walkthrough](podman.md)
+
+  1. SELinux (Linux härten)
+     * [SELinux](selinux.md)
+    
+  1. Tools/Verschiedens 
+     * [Remote Desktop für Linux / durch Teilnehmer getestet](https://wiki.ubuntuusers.de/Remmina/)
+     * [Warum umask 022 und 0002 ? - Geschichte](umask-002-022-why.md)
