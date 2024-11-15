@@ -48,7 +48,7 @@ Description=myscript timer
 
 [Timer]
 OnBootSec=80
-OnCalender=*:0/2
+OnCalendar=*:0/2
 
 [Install]
 WantedBy=multi-user.target
