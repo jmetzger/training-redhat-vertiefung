@@ -14,7 +14,3 @@
 
   * [..ansonsten Google :o)](https://www.google.com/search?q=bash+cheatsheet)
 
-## Bash - Programmierung 
-
-  * [Bash Programmierung](https://tldp.org/LDP/Bash-Beginners-Guide/html/)
-  * [Bash Advanced Programmierung](https://tldp.org/LDP/abs/html/loops1.html)
