@@ -48,7 +48,7 @@ echo $TAG >> /var/log/scripting.log
 
 ```
 ## Script - Berechtigungen setzten 
-chmod u+x /root/script.sh 
+chmod u+x script.sh 
 ```
 
 ```
