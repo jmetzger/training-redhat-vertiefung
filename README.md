@@ -60,6 +60,7 @@
      * [Dienste debuggen](debug-service.md)
      * [Rsyslog](rsyslog.md)
      * [Journal analysieren](journalctl.md)
+     * [Logrotate](logrotate.md)
   1. Dienste debuggen
      * [Dienste debuggen](debug-service.md)
   1. Variablen
