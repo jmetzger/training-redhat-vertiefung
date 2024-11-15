@@ -10,7 +10,12 @@ cd /etc/cron.d
 # root@ubuntu2004-104:/etc/cron.d# ls -la trainingscript
 # -rw-r--r-- 1 root root 471 Mar 26 12:44 trainingscript
 
-# cat trainingscript
+```
+nano trainingscript
+```
+
+```
+## cat trainingscript
 SHELL=/bin/sh
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 
