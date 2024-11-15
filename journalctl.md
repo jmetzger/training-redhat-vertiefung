@@ -59,7 +59,7 @@ journalctl -o json-pretty
 journalctl _PID=5
 ```
 
-## journalctl - waa gibt es für Felder 
+## journalctl - was gibt es für Felder 
 
 ```
 journalctl -o json-pretty 
