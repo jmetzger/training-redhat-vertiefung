@@ -49,6 +49,9 @@ Description=myservice timer
 [Timer]
 OnBootSec=80
 OnCalender=*:0/2
+
+[Install]
+WantedBy=multi-user.target
 ```
 
 ## Step 4: Timer aktiveren 
