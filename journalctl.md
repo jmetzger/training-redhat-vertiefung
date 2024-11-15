@@ -43,7 +43,7 @@ SystemMaxUse=1G
 journalctl -u sshd 
 
 # Nicht von Anfang, sondern die letzten Zeilen anzeigen 
-journactl -eu sshd
+journalctl -eu sshd
 ```
 
 ## journalctl - ausgabe json 
@@ -67,7 +67,7 @@ journalctl -u sshd.service -o json-pretty
 ```
 
 
-## journalctl 
+## journalctl - mit Zeitangaben 
 
 ```
 # alles seit gestern 
@@ -79,10 +79,14 @@ journalctl --since today
 # nur Stunde geht nicht
 journalctl --since "2022-08-17 00:05"
 
-# nur neuen Sachen / Veränderungen ausgeben
+# bis heute 09:45 
+journalctl --since yesterday --until "09:45"
+```
+
+## journalctl - immer die neuesten Infos ausgeben (wie bei tail -f) 
+
+```
 journalctl -f -u apache2.service 
-
-
 ```
 
 ## Help-pages 
