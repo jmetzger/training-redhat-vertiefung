@@ -59,17 +59,19 @@ journalctl -o json-pretty
 journalctl _PID=5
 ```
 
+## journalctl - waa gibt es für Felder 
+
+```
+journalctl -o json-pretty 
+journalctl -u sshd.service -o json-pretty
+```
+
 
 ## journalctl 
 
 ```
-# ubuntu
-journalctl -u ssh.service 
-# Rocky / RHEL 
-journalctl -u sshd.service
-
 # sehr schön um alle felder zu sehen 
-journalctl -o json-pretty 
+
 
 # alles was pid xy
 journalctl _PID=5 
