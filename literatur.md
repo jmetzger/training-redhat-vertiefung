@@ -12,7 +12,6 @@
 
 ## Cheatsheet 
 
-  * [Cheatsheet bash](https://www2.icp.uni-stuttgart.de/~icp/mediawiki/images/b/bd/Sim_Meth_I_T0_cheat_sheet_10_11.pdf)
   * [..ansonsten Google :o)](https://www.google.com/search?q=bash+cheatsheet)
 
 ## Bash - Programmierung 
