@@ -71,8 +71,6 @@
      * [Default Editor systemctl setzen](default-editor-systemctl.md) 
   1. Systemd 
      * [Die wichtigen Tools für die Kommandozeile (ctl)](systemd-cli-tools.md)
-  1. Firewall
-     * [Arbeiten mit firewalld](firewalld.md)
   1. Systemadministration 
      * [Hostname setzen/abfragen](hostnamectl.md) 
      * [ssh absichern](ssh-absichern.md)
@@ -122,6 +120,9 @@
 
   1. Wartung und Aktualisierung
      * [Paketmanager yum](yum.md)
+
+  1. Firewall
+     * [Arbeiten mit firewalld](firewalld.md)
 
   1. Podman 
      * [Podman Walkthrough](podman.md)
