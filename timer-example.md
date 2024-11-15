@@ -9,9 +9,11 @@ nano script.sh
 
 
 ```
-
-
-
+#!/bin/bash
+TAG='FREITAG'
+echo " ---- " 
+date 
+echo $TAG 
 ```
 
 ## Step 2: Service-Unit für script 
