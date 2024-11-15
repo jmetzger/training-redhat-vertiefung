@@ -19,5 +19,6 @@ vi output_log
 ```
 
 ```
-systemctl start logrotate.service 
+systemctl start logrotate.service
+ls -la /var/log/output*
 ```
