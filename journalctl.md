@@ -53,6 +53,12 @@ journactl -eu sshd
 journalctl -o json-pretty 
 ```
 
+## journalctl - konkreten Prozess anzeigen 
+
+```
+journalctl _PID=5
+```
+
 
 ## journalctl 
 
