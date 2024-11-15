@@ -60,6 +60,7 @@
      * [Dienste debuggen](#dienste-debuggen)
      * [Rsyslog](#rsyslog)
      * [Journal analysieren](#journal-analysieren)
+     * [Logrotate](#logrotate)
   1. Dienste debuggen
      * [Dienste debuggen](#dienste-debuggen)
   1. Variablen
@@ -1655,6 +1656,32 @@ man systemd.journal-fields
 
 
 
+### Logrotate
+
+
+```
+cd /var/log
+cp -a messages output.log
+```
+
+```
+cd /etc/logrotate.d
+vi output_log
+```
+
+```
+/var/log/output.log {
+        size 1k
+        create 700 kurs kurs
+        rotate 4
+}
+```
+
+```
+systemctl start logrotate.service
+ls -la /var/log/output*
+```
+
 ## Dienste debuggen
 
 ### Dienste debuggen
@@ -2153,6 +2180,32 @@ su - root # bzw. su - benutzer
 ### ssh absichern
 
 
+### Übung 1: Basisabsicherung mit AllowGroups 
+
+```
+groupadd sshadmin
+usermod -aG sshadmin kurs
+```
+
+```
+vi /etc/ssh/sshd_config
+```
+
+```
+## 20241115 - jmetzger - only sshadmin 
+AllowGroups sshadmin
+```
+
+```
+systemctl reload sshd
+```
+
+```
+## Testen... mit Nutzer kurs verbinden
+## per ssh
+## geht das
+```
+
 ### sshd_config // Server
 
 ```
@@ -2205,11 +2258,17 @@ ssh kurs@server1
 lsblk 
 
 ## Schritt 3: Platte partitionieren 
-mkpart /dev/sdb1
+parted /dev/sdb
+```
+
+
+```
 mklabel gpt
 mkpart data2 ext4 2048s 500M # data2 ist name der Partition bei gpt 
 quit 
+```
 
+```
 ## Schritt 4: Partition formatiert 
 lsblk # Partition identfiziert 
 mkfs.ext4 /dev/sdb1 
