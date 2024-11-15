@@ -9,6 +9,7 @@ cd /etc/cron.d
 # ls -la trainingscript
 # root@ubuntu2004-104:/etc/cron.d# ls -la trainingscript
 # -rw-r--r-- 1 root root 471 Mar 26 12:44 trainingscript
+```
 
 ```
 nano trainingscript
