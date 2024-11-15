@@ -44,7 +44,7 @@ systemctl edit --full --force myscript.timer
 
 ```
 [Unit]
-Description=myservice timer 
+Description=myscript timer 
 
 [Timer]
 OnBootSec=80
@@ -57,7 +57,8 @@ WantedBy=multi-user.target
 ## Step 4: Timer aktiveren 
 
 ```
-systemctl enable myservice.timer
+systemctl enable myscript.timer
+systemctl start myscript.timer 
 systemctl list-timers 
 ```
 
