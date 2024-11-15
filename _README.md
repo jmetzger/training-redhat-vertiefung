@@ -1,4 +1,4 @@
-# Redhat Linux Grundlagen
+# Redhat Grundlagen
 
 
 ## Agenda
@@ -17,8 +17,8 @@
   1. Erweiterte Befehle (Nice to have) 
      * [Alias Befehle anzeigen](#alias-befehle-anzeigen)
      * [Welche Bibliotheken verwendet ein ausführbares Programm](#welche-bibliotheken-verwendet-ein-ausführbares-programm)
-     * [Ist ein Befehl extern, alias oder intern](#ist-ein-befehl-extern,-alias-oder-intern)
-
+     * [Ist ein Befehl extern, alias oder intern](#ist-ein-befehl-extern-alias-oder-intern)
+     * [History verwenden](#history-verwenden)
   1. Dateien und Verzeichnisse
      * [Mit cd im System navigieren](#mit-cd-im-system-navigieren)
      * [Verzeichnisse in Listenansicht mit versteckten Dateien anzeigen -> ls -la](#verzeichnisse-in-listenansicht-mit-versteckten-dateien-anzeigen-->-ls--la)
@@ -27,7 +27,6 @@
      * [Verzeichnisse und Dateien löschen](#verzeichnisse-und-dateien-löschen)
      * [Kopieren/Verschieben/Umbenennen von Dateien und Files](#kopierenverschiebenumbenennen-von-dateien-und-files)
      * [Arbeiten mit vi](#arbeiten-mit-vi)
-  
   1. Dateimanipulation/Unix Tools
      * [Anfang oder Ende einer Datei/Ausgabe anzeigen](#anfang-oder-ende-einer-dateiausgabe-anzeigen)
      * [cat/head/tail-Beginn/Ende einer Datei anzeigen](#catheadtail-beginnende-einer-datei-anzeigen)
@@ -36,42 +35,49 @@
      * [Bestimmte Zeilen aus Datei anzeigen - grep](#bestimmte-zeilen-aus-datei-anzeigen---grep)
      * [Erweiterte Suche mit Grep](#erweiterte-suche-mit-grep)
      * [Finden von files nach Kriterien - find](#finden-von-files-nach-kriterien---find)
-  
-  1. Prozesse 
+     * [Doppelte Leerzeichen aus Zeile rauslöschen](#doppelte-leerzeichen-aus-zeile-rauslöschen)
+     * [Spalten auslesen mit awk](#spalten-auslesen-mit-awk)
+     * [Strings in datei ersetzen mit sed](#strings-in-datei-ersetzen-mit-sed)
+  1. Backups
+     * [Backup / Restore with tar](#backup--restore-with-tar)
+     * [Backup with tar / zstd](#backup-with-tar--zstd)
+  1. Komprimierung
+     * [Datei komprimieren](#datei-komprimieren)
+  1. Prozesse
+     * [Prozesse interaktiv mit top anzeigen](#prozesse-interaktiv-mit-top-anzeigen)
      * [Prozesse anzeigen - ps/pstree -p](#prozesse-anzeigen---pspstree--p)
      * [Alle Prozesse eines Dienstes anzeigen](#alle-prozesse-eines-dienstes-anzeigen)
-
+     * [Prozesse im Hintergrund laufen lasen](#prozesse-im-hintergrund-laufen-lasen)
+  1. Festplattenbelegung
+     * [Welche Verzeichnisse / Partitionen sind voll? du und df](#welche-verzeichnisse--partitionen-sind-voll-du-und-df)
   1. Benutzer, Gruppen und Rechte 
-     * [Rechte](#rechte)
+     * [Rechte/Benutzer/Gruppe](#rechtebenutzergruppe)
      * [Dateien für Benutzer und Gruppen](#dateien-für-benutzer-und-gruppen)
      * [Benutzer anlegen](#benutzer-anlegen)
      * [sudo Benutzer erstellen](#sudo-benutzer-erstellen)
-  
   1. Logs/Loganalyse
      * [Logfile beobachten](#logfile-beobachten)
      * [Dienste debuggen](#dienste-debuggen)
      * [Rsyslog](#rsyslog)
      * [Journal analysieren](#journal-analysieren)
+  1. Dienste debuggen
+     * [Dienste debuggen](#dienste-debuggen)
   1. Variablen
      * [Setzen und verwenden von Variablen](#setzen-und-verwenden-von-variablen)
   1. Dienste/Runlevel(Targets verwalten) 
      * [Die wichtigsten systemctl/service](#die-wichtigsten-systemctlservice)
      * [Systemctl - timers](#systemctl---timers)
-     * [Gegenüberstellung service etc/init.d/ systemctl](#gegenüberstellung-service-etcinit.d-systemctl)
+     * [Gegenüberstellung service etc/init.d/ systemctl](#gegenüberstellung-service-etcinitd-systemctl)
      * [Default Editor systemctl setzen](#default-editor-systemctl-setzen)
-
   1. Systemd 
      * [Die wichtigen Tools für die Kommandozeile (ctl)](#die-wichtigen-tools-für-die-kommandozeile-ctl)
-
   1. Firewall
      * [Arbeiten mit firewalld](#arbeiten-mit-firewalld)
-
   1. Systemadministration 
      * [Hostname setzen/abfragen](#hostname-setzenabfragen)
      * [ssh absichern](#ssh-absichern)
-
   1. Partitionierung und Filesystem
-     * [parted and mkfs.ext4](#parted-and-mkfs.ext4)
+     * [parted and mkfs.ext4](#parted-and-mkfsext4)
   1. Boot-Prozess und Kernel 
      * [Grub konfigurieren](#grub-konfigurieren)
      * [Kernel-Version anzeigen](#kernel-version-anzeigen)
@@ -83,9 +89,10 @@
      * [Installations-Images-Server](https://ubuntu.com/download/server#download)
   1. Wartung und Aktualisierung
      * [Aktualisierung des Systems](#aktualisierung-des-systems)
-     * [Paketmanager yum](#paketmanager-yum)
+     * [Paketmanager dnf](#paketmanager-dnf)
      * [Archive runterladen und entpacken](#archive-runterladen-und-entpacken)
      * [Apache installieren (firewall und selinux)](#apache-installieren-firewall-und-selinux)
+     * [mbr sichern mit dd](#mbr-sichern-mit-dd)
   1. Firewall und ports
      * [firewalld](#firewalld)
      * [Scannen und Überprüfen mit telnet/nmap](#scannen-und-überprüfen-mit-telnetnmap)
@@ -117,7 +124,10 @@
   1. Literatur 
      * [Literatur](#literatur)
 
+## Backlog 
 
+  1. Wartung und Aktualisierung
+     * [Paketmanager yum](#paketmanager-yum)
 
 
 <div class="page-break"></div>
@@ -181,8 +191,6 @@ DDWRT
 ### Seite mit Übersicht aller Linux-Distros 
 
   * https://distrowatch.com/
-
-<div class="page-break"></div>
 
 ## Verzeichnisse und Dateitypen 
 
@@ -256,8 +264,6 @@ DDWRT
 
   * Normale Programme für alle (executables) 
 
-<div class="page-break"></div>
-
 ### Dateitypen
 
 
@@ -276,8 +282,6 @@ b Block-Device (Ausgabegerät): Blockorientiert, z.B. Festplatte)
 s socket (Für Kommunikation von client zu server / server zu client) auf der gleichen Maschine  
 ```
 
-<div class="page-break"></div>
-
 ## Basisbefehle
 
 ### In den Root-Benutzer wechseln
@@ -289,8 +293,6 @@ sudo su -
 ## eingeben des Passworts des Benutzers
 ```
 
-<div class="page-break"></div>
-
 ### Wo bin ich ?
 
 
@@ -300,8 +302,6 @@ sudo su -
 ## pwd - Print working directory 
 pwd 
 ```
-
-<div class="page-break"></div>
 
 ### Praktische Ausgabe von langen Seiten - less
 
@@ -352,16 +352,12 @@ h
 q
 ```
 
-<div class="page-break"></div>
-
 ### Datei anlegen - touch
 
 
 ```
 touch dateiname 
 ```
-
-<div class="page-break"></div>
 
 ### Autovervollständen * und tab
 
@@ -385,8 +381,6 @@ echo todol<TAB> # bei einem weiteren Eintrag
 
 
 
-<div class="page-break"></div>
-
 ### Welches Programm wird verwendet
 
 
@@ -395,8 +389,6 @@ echo todol<TAB> # bei einem weiteren Eintrag
 ## und zeigt ersten Fund --> d.h. dieses Programm würde ausgeführt 
 which false 
 ```
-
-<div class="page-break"></div>
 
 ## Erweiterte Befehle (Nice to have) 
 
@@ -424,8 +416,6 @@ alias l3='ls -la | head -n 3'
 unalias l3
 ```
 
-<div class="page-break"></div>
-
 ### Welche Bibliotheken verwendet ein ausführbares Programm
 
 
@@ -433,9 +423,57 @@ unalias l3
 ldd /usr/bin/ls 
 ```
 
-<div class="page-break"></div>
-
 ### Ist ein Befehl extern, alias oder intern
+
+
+```
+type cd 
+type echo 
+type ls
+type find 
+```
+
+### History verwenden
+
+
+### history
+
+```
+## Zeigt die letzten 100 Befehle an
+history
+```
+
+```
+## !<Zahl>
+## führt Befehl 24 aus der history nochmal aus
+!24
+```
+
+```
+<ArrowUp - Pfeile nach oben>
+Zeigt den letzten Befehl aus der history
+
+## auch mehrmals möglich
+```
+
+### Special force
+
+```
+## führt den letzten Befehl aus der history aus 
+!! 
+
+## kombinierbar: macht ein sudo mit den letzten Befehl aus der history 
+sudo !! 
+```
+
+### Reverse Search 
+
+```
+## Rückwärtssuche über alle Einträge 
+## STRG + r
+```
+
+
 
 ## Dateien und Verzeichnisse
 
@@ -463,8 +501,14 @@ cd etc
 cd /etc 
 ```
 
+### Ins alte Verzeichnis wechseln 
 
-<div class="page-break"></div>
+```
+cd /var/log
+cd /etc
+## Wechselt in /var/log zurück 
+cd -
+```
 
 ### Verzeichnisse in Listenansicht mit versteckten Dateien anzeigen -> ls -la
 
@@ -472,8 +516,6 @@ cd /etc
 ```
 ls -la 
 ```
-
-<div class="page-break"></div>
 
 ### Inhalt in Datei schreiben und anhängen
 
@@ -492,8 +534,6 @@ ls -la > todo
 ## angehängt 
 echo "hans hat durst" >> todo 
 ```
-
-<div class="page-break"></div>
 
 ### Verzeichnisse anlegen
 
@@ -531,8 +571,6 @@ tree dokumente
 tree /etc | less 
 
 ```
-
-<div class="page-break"></div>
 
 ### Verzeichnisse und Dateien löschen
 
@@ -577,8 +615,6 @@ cat woche1.txt
 
 ```
 
-<div class="page-break"></div>
-
 ### Kopieren/Verschieben/Umbenennen von Dateien und Files
 
 
@@ -615,8 +651,6 @@ cp -a /etc /etc3
 
 ```
 
-<div class="page-break"></div>
-
 ### Arbeiten mit vi
 
 
@@ -644,7 +678,7 @@ vimtutor # sollte bereits mit vi installiert worden sein.
 ### Wichtigste Aktionen 
 
 ```
-  1. # Öffnen eine neuer Datei mit vi 
+  1. # Öffnen einer neuer Datei mit vi 
   vi dateiname 
   
   2. # Schreiben in der Datei 
@@ -701,8 +735,6 @@ STRG + w w
 
 http://www.atmos.albany.edu/daes/atmclasses/atm350/vi_cheat_sheet.pdf
 
-<div class="page-break"></div>
-
 ## Dateimanipulation/Unix Tools
 
 ### Anfang oder Ende einer Datei/Ausgabe anzeigen
@@ -742,8 +774,6 @@ tail -n20 /etc/services
 tail -20 /etc/services 
 tail --lines=20 /etc/services
 ```
-
-<div class="page-break"></div>
 
 ### cat/head/tail-Beginn/Ende einer Datei anzeigen
 
@@ -788,8 +818,6 @@ tail -n 40 /etc/services
 cat /etc/services | tail
 ```
 
-<div class="page-break"></div>
-
 ### zcat - Inhalte einer mit gzip komprimierten Datei anzeigen
 
 ### wc - Zeilen zählen
@@ -805,8 +833,6 @@ wc -l /etc/services
 ```
 ls -la | wc -l 
 ```
-
-<div class="page-break"></div>
 
 ### Bestimmte Zeilen aus Datei anzeigen - grep
 
@@ -840,9 +866,8 @@ cat /etc/services | grep  "s$"
 
 ```
 grep -r "PermitRootLogin" /etc
+grep -irn "PermitRootLogin" /etc
 ```
-
-<div class="page-break"></div>
 
 ### Erweiterte Suche mit Grep
 
@@ -970,8 +995,6 @@ grep  "[[:digit:]]\{5\}" /root/namen
 
   * https://www.cyberciti.biz/faq/grep-regular-expressions/
 
-<div class="page-break"></div>
-
 ### Finden von files nach Kriterien - find
 
 
@@ -982,9 +1005,148 @@ grep  "[[:digit:]]\{5\}" /root/namen
 find / -name tmpfiles.d -type d 
 ```
 
-<div class="page-break"></div>
+### Doppelte Leerzeichen aus Zeile rauslöschen
 
-## Prozesse 
+
+### Beispiel: mehrere Leerzeichen rauslöschen (eines soll verbleiben) 
+
+```
+cat /etc/services | tr -s ' ' 
+```
+
+### Spalten auslesen mit awk
+
+
+### /etc/passwd
+
+```
+## use ':' as seperator 
+cat /etc/passwd | awk -F: '{print $6 ":" $1}'
+```
+
+### Strings in datei ersetzen mit sed
+
+
+```
+## good test it before on stdout without inplace param -> -i
+cp -a /etc/ssh/sshd_config /etc/ssh/sshd_config_test
+sed "s/PasswordAuthentication no/PasswordAuthentication yes/g" /etc/ssh/sshd_config_test | less
+## then in place 
+sed -i "s/PasswordAuthentication no/PasswordAuthentication yes/g" /etc/ssh/sshd_config_test
+```
+
+## Backups
+
+### Backup / Restore with tar
+
+
+### Sichern / Backup 
+
+```
+cd /usr/src
+tar cfvz _etc.20220617.tar.gz /etc
+## war das archivieren erfolgreich // dann 0 
+echo $? 
+tar tf _etc.20220617.tar.gz
+```
+
+
+### Entpacken (Vorbereitung) 
+
+```
+mkdir foo
+mv _etc.20220617.tar.gz foo
+cd foo
+```
+
+
+
+### Entpacken (Variante 1)
+
+```
+tar xvf _etc.20220617.tar.gz
+
+## Aufräumen
+rm -fR etc/
+```
+
+### Entpacken (Variante 2) 
+
+```
+tar tf _etc.20220617.tar.gz
+
+## Achtung Fehler - weil falscher Pfad 
+tar xvf _etc.20220617.tar.gz etc/sysctl.d/99-sysctl.conf /etc/services
+echo $?
+
+## So geht's 
+tar xvf _etc.20220617.tar.gz etc/sysctl.d/99-sysctl.conf etc/services
+ls -la
+```
+
+### Entpacken (Variante 3) - direkt in ein bestimmtes Verzeichnhis
+
+```
+tar tf _etc.20220617.tar.gz
+tar xvf _etc.20220617.tar.gz -C / etc/sysctl.d/99-sysctl.conf etc/services
+```
+
+
+### Referenz:
+
+  * https://linuxconfig.org/how-to-create-incremental-and-differential-backups-with-tar
+
+
+### Backup with tar / zstd
+
+
+### Simple with default compression (3) 
+
+```
+tar cvf _etc.foobar.tar.zst --zstd /etc
+```
+
+### Use higher compression 
+
+```
+## send result of tar to stdout 
+tar cvf - /etc | zstd -15 > _etc.mega.tar.zst
+```
+
+## Komprimierung
+
+### Datei komprimieren
+
+
+### zcat 
+
+```
+zcat /var/log/syslog.2.gz 
+```
+
+### Übung komprimieren 
+
+```
+Phase 1:  Komprimieren 
+
+cd /var/log 
+cat messages | grep 'Nov 13' | gzip  
+cat messages | grep '^Nov 13' | gzip > /usr/src/messages.gz
+
+Phase 2: Entpacken 
+gzip -d messages.gz
+## or
+gunzip messages.gz
+```
+
+## Prozesse
+
+### Prozesse interaktiv mit top anzeigen
+
+
+```
+top
+```
 
 ### Prozesse anzeigen - ps/pstree -p
 
@@ -1009,10 +1171,10 @@ systemctl status sshd
 pstree -p 
 ```
 
-<div class="page-break"></div>
-
 ### Alle Prozesse eines Dienstes anzeigen
 
+
+### Show all mysql processes 
 
 ```
 ## inkl header - 2 Befehle getrennt durch ';' 
@@ -1025,11 +1187,145 @@ mysql      16938  0.0  1.1 1778456 94776 ?       Ssl  09:51   0:00 /usr/libexec/
 
 ```
 
-<div class="page-break"></div>
+
+### Show all ssh-processes 
+
+```
+ps -efaxo user,pid,ppid,cmd | grep ssh
+```
+
+```
+ps -efaxo user,pid,ppid,cmd | head -n1; ps -efaxo user,pid,ppid,cmd | grep ssh
+
+### Prozesse im Hintergrund laufen lasen
+
+
+### Version with & (background task)
+
+#### Step 1: Create and run script 
+
+```
+cd /usr/local/bin 
+nano endless.sh
+```
+
+```
+let i=0
+while true
+do
+  let i=i+1
+  echo $(date)"..jetzt.."$i >> /var/log/endlosscheife.log
+  sleep 2
+
+done
+```
+
+```
+chmod u+x endless.sh
+```
+
+#### Step 2: Script starten  und beenden
+
+```
+endless.sh
+## beend 
+STRG + c
+```
+#### Step 3: Im Hintergrund laufen lassen und abmelden
+
+```
+endless.sh &
+## aus ssh abmelden
+exit
+```
+
+#### Step 4: in 2. Session - prüfen ob es noch läuft 
+
+```
+## ja, es läuft
+ps aux | grep endless
+```
+
+### Version with & (background task) and nohup (no hangup)
+
+#### Step 1: Create and run script 
+
+```
+cd /usr/local/bin 
+nano endless.sh
+```
+
+```
+let i=0
+while true
+do
+  let i=i+1
+  echo $(date)"..jetzt.."$i >> /var/log/endlosscheife.log
+  echo $(date)"..hier ausgeben"
+  sleep 2
+
+done
+```
+
+```
+chmod u+x endless.sh
+```
+
+#### Step 2: Im Hintergrund mit nohup laufen lassen und abmelden
+
+```
+pwd
+nohup endless.sh &
+## aus ssh abmelden
+exit
+```
+
+#### Step 3: in 2. Session - prüfen ob es noch läuft 
+
+```
+sudo su  -
+```
+
+```
+## ja, es läuft
+ps aux | grep endless
+tail nohup.out
+```
+
+
+
+## Festplattenbelegung
+
+### Welche Verzeichnisse / Partitionen sind voll? du und df
+
+
+### Ist meine Platte voll ?
+
+```
+## Alle Partitionen 
+df -h
+## nur root partition
+df -h /
+## eine bestimmte Partition
+df -h /dev/sda1
+## ein file, welche partition ist das 
+df -h /etc/hosts 
+```
+
+### Welche Verzeichnisse sind besonders voll ? 
+
+```
+## zeigt top-level verzeichnisse 
+du -h --max-depth=1 / 
+
+## zeigt directories für /var/log an
+du -h --max-depth= 1 /var 
+```
+
 
 ## Benutzer, Gruppen und Rechte 
 
-### Rechte
+### Rechte/Benutzer/Gruppe
 
 
 ### Arten 
@@ -1081,7 +1377,39 @@ chmod 777 testfile
 chmod -R 777 testverzeichnis 
 ```
 
-<div class="page-break"></div>
+### Besitzer ändern (nur als root) 
+
+```
+ls -la datei5
+-rw-r--r--. 1 kurs kurs 0 14. Nov 11:06 datei5
+```
+
+```
+sudo chown root datei5
+```
+
+### Gruppe ändern (nur als root) 
+
+```
+ls -la datei5
+-rw-r--r--. 1 kurs kurs 0 14. Nov 11:06 datei5
+```
+
+```
+sudo chown :root datei5
+```
+
+### Besitzer und Gruppe ändern (nur als root) 
+
+```
+ls -la datei5
+-rw-r--r--. 1 kurs kurs 0 14. Nov 11:06 datei5
+```
+
+```
+sudo chown root:root datei5
+```
+
 
 ### Dateien für Benutzer und Gruppen
 
@@ -1100,8 +1428,6 @@ kurs@ubuntu2004-104:/etc$ ls -la passwd shadow group
 
 ```
 
-<div class="page-break"></div>
-
 ### Benutzer anlegen
 
 
@@ -1114,8 +1440,6 @@ useradd
 ## for admins interactive
 adduser
 ```
-
-<div class="page-break"></div>
 
 ### sudo Benutzer erstellen
 
@@ -1133,8 +1457,6 @@ id # shows the same but more info
 sudo su -
 ```
 
-<div class="page-break"></div>
-
 ## Logs/Loganalyse
 
 ### Logfile beobachten
@@ -1149,8 +1471,6 @@ logger meine_nachricht
 
 ```
 
-<div class="page-break"></div>
-
 ### Dienste debuggen
 
 
@@ -1164,7 +1484,7 @@ systemctl restart mariadb.service
 systemctl status mariadb.service 
 
 ## Nicht fündig-> Schritt 2:
-jourrnalctl -xe
+journalctl -eu mariadb.service
 
 ## Nicht fündig -> Schritt 3:
 ## -e springt ans Ende des Pages
@@ -1213,8 +1533,6 @@ grep -r gummitulpe /etc
 /etc/my.cnf.d/mariadb-server.cnf:gummitulpe=/nix
 ```
 
-<div class="page-break"></div>
-
 ### Rsyslog
 
 
@@ -1230,8 +1548,6 @@ grep -r gummitulpe /etc
 
 Ref: https://www.tecmint.com/setup-rsyslog-client-to-send-logs-to-rsyslog-server-in-centos-7/
 ```
-
-<div class="page-break"></div>
 
 ### Journal analysieren
 
@@ -1276,10 +1592,127 @@ SystemMaxUse=1G
 
 ```
 ## ubuntu
-journalctl -u ssh 
+journalctl -u sshd 
+
+## Nicht von Anfang, sondern die letzten Zeilen anzeigen 
+journalctl -eu sshd
 ```
 
-<div class="page-break"></div>
+### journalctl - ausgabe json 
+
+```
+## sehr schön um alle felder zu sehen 
+journalctl -o json-pretty 
+```
+
+### journalctl - konkreten Prozess anzeigen 
+
+```
+journalctl _PID=5
+```
+
+### journalctl - was gibt es für Felder 
+
+```
+journalctl -o json-pretty 
+journalctl -u sshd.service -o json-pretty
+```
+
+
+### journalctl - mit Zeitangaben 
+
+```
+## alles seit gestern 
+journalctl --since yesterday 
+journalctl --since now 
+journalctl --since today
+## mit datum -> hier wichtig, dass richtige format
+## Mindestens Tag oder Tag und Uhrzeit (ohne sekunden)
+## nur Stunde geht nicht
+journalctl --since "2022-08-17 00:05"
+
+## bis heute 09:45 
+journalctl --since yesterday --until "09:45"
+```
+
+### journalctl - immer die neuesten Infos ausgeben (wie bei tail -f) 
+
+```
+journalctl -f -u apache2.service 
+```
+
+### Help-pages 
+
+```
+man journalctl
+man systemd.journal-fields
+```
+
+
+
+## Dienste debuggen
+
+### Dienste debuggen
+
+
+### Walkthrough 
+
+```
+## Dienst startet nicht / nach Ausführen von systemctl restart wird Fehlermeldung ausgegeben
+systemctl restart mariadb.service 
+
+## Schritt 1 : status -> was sagen die logs (letzte 10 Zeilen) 
+systemctl status mariadb.service 
+
+## Nicht fündig-> Schritt 2:
+journalctl -eu mariadb.service
+
+## Nicht fündig -> Schritt 3:
+## -e springt ans Ende des Pages
+journalctl -e -u mariadb.service 
+
+## Nicht fündig -> Schritt 4:
+## Spezifisches Log von Dienst suchen 
+## und evtl. LogLevel von Dienst hochsetzen
+## z.B. bei mariadb (durch Internetrecherche herausfinden) 
+less /var/log/mariadb/mariadb.log 
+## oder schneller
+## Zeige alle Zeilen mit dem Wort error an (case insensitive) 
+## also auch z.B. ERROR 
+cat /var/log/mariadb/mariadb.log | grep -i error
+
+
+## Nicht fündig -> Schritt 5
+## Allgemeines Log
+## REdhat/Centos 
+/var/log/messages 
+```
+
+### Wie verfahren bei SystemV 
+
+```
+Wie bei walkthrough aber ab Schritt 4
+```
+
+### Find error in logs quickly
+
+```
+cd /var/log/mysql 
+## -i = case insensitive // egal ob gross- oder kleingeschrieben
+cat error.log | grep -i error
+```
+
+### Found wrong config-value, what now ?
+
+```
+## You know the wrong config value, but not 
+## where it is (in which file)
+## assuming gummitulpe is the wrong config value 
+grep -r gummitulpe /etc
+
+## Ausgabe
+/etc/my.cnf.d/mariadb-server.cnf:gummitulpe=/nix
+```
 
 ## Variablen
 
@@ -1309,8 +1742,6 @@ journalctl -u ssh
  echo $DATUM
  echo $DATUM >> /var/log/datumslog
 ```
-
-<div class="page-break"></div>
 
 ## Dienste/Runlevel(Targets verwalten) 
 
@@ -1408,7 +1839,7 @@ lrwxrwxrwx 1 root root 16 Jan  6 20:47 runlevel5.target -> graphical.target
 lrwxrwxrwx 1 root root 13 Jan  6 20:47 runlevel6.target -> reboot.target
 ```
 
-### Welche Dienste sind aktiviert/deaktiviert 
+### Welche Dienste sind enabled (preset) und auf dem System 
 ```
 systemctl list-unit-files -t service
 ```
@@ -1516,8 +1947,6 @@ systemctl poweroff
 
 
 
-<div class="page-break"></div>
-
 ### Systemctl - timers
 
 
@@ -1594,8 +2023,6 @@ IOSchedulingClass=idle
 
   * https://nielsk.micro.blog/2015/11/11/creating-systemd-timers.html
 
-<div class="page-break"></div>
-
 ### Gegenüberstellung service etc/init.d/ systemctl
 
 
@@ -1616,8 +2043,6 @@ service rsyslog status
 
 ```
 
-<div class="page-break"></div>
-
 ### Default Editor systemctl setzen
 
 
@@ -1630,8 +2055,6 @@ export SYSTEMD_EDITOR=vim
 export SYSTEMD_EDITOR=vim
 
 ```
-
-<div class="page-break"></div>
 
 ## Systemd 
 
@@ -1646,8 +2069,6 @@ hostnamectl # Hostname einstellen
 timedatectl 
 localectl # locales konfigurieren
 ```
-
-<div class="page-break"></div>
 
 ## Firewall
 
@@ -1811,8 +2232,6 @@ firewall-cmd --runtime-to-permanent
   * https://www.linuxjournal.com/content/understanding-firewalld-multi-zone-configurations#:~:text=Going%20line%20by%20line%20through,or%20source%20associated%20with%20it.
   * https://www.answertopia.com/ubuntu/basic-ubuntu-firewall-configuration-with-firewalld/
 
-<div class="page-break"></div>
-
 ## Systemadministration 
 
 ### Hostname setzen/abfragen
@@ -1826,8 +2245,6 @@ hostnamectl
 ## Trick für prompt - ist in der aktuellen, erst nach neueinloggen/bzw. neuer bash aktiv 
 su - root # bzw. su - benutzer 
 ```
-
-<div class="page-break"></div>
 
 ### ssh absichern
 
@@ -1869,8 +2286,6 @@ ssh-copy-id kurs@server1
 ssh kurs@server1 
 
 ```
-
-<div class="page-break"></div>
 
 ## Partitionierung und Filesystem
 
@@ -1921,8 +2336,6 @@ mount | grep platte  # taucht platte hier auf ?
 
 ```
 
-<div class="page-break"></div>
-
 ## Boot-Prozess und Kernel 
 
 ### Grub konfigurieren
@@ -1954,16 +2367,12 @@ update-grub
 ## Step 4 - be happy 
 ```
 
-<div class="page-break"></div>
-
 ### Kernel-Version anzeigen
 
 
 ```
 uname -a 
 ```
-
-<div class="page-break"></div>
 
 ### Kernel-Module laden/entladen/zeigen
 
@@ -1993,8 +2402,6 @@ cd /lib/modules/5.4.0-66-generic
 find /lib/modules -name psmouse* 
 /lib/modules/5.4.0-66-generic/kernel/drivers/input/mouse/psmouse.ko
 ```
-
-<div class="page-break"></div>
 
 ## Hilfe 
 
@@ -2038,16 +2445,12 @@ n # nächster Treffer (kleines n)
 N # letzter Treffer 
 ```
 
-<div class="page-break"></div>
-
 ## Grafische Oberfläche und Installation 
 
 ### X-Server - Ausgabe auf Windows umleiten
 
 
   * https://www.thomas-krenn.com/de/wiki/Grafische_Linux_Programme_remote_von_einem_Windows_PC_mit_Xming_nutzen
-
-<div class="page-break"></div>
 
 ### Installations-Images-Server
 
@@ -2058,75 +2461,56 @@ N # letzter Treffer
 ### Aktualisierung des Systems
 
 
-```
-apt update
-apt upgrade 
-apt dist-upgrade 
-
-## oder geht auch auf älteren Systemen
-apt-get update
-apt-get upgrade
-apt-get dist-upgrade
+### Updaten des Systems 
 
 ```
+## -y without asking 
+dnf -y update
+## or
+dnf -y upgrade
+### is the same
+```
 
-<div class="page-break"></div>
-
-### Paketmanager yum
+### Paketmanager dnf
 
 
 ### Mögliche Paket anzeigen (die installiert sind und installiert werden können)
 
 ```
-yum list
+dnf list
 ```
 
 ### Installierte Pakete anzeigen 
 
 ```
-yum list --installed 
+dnf list --installed 
 ```
 
 ### Herausfinden, wie ein Paket heisst, dass ich installieren will
 
 ```
-yum list | grep mariadb 
+dnf list | grep mariadb 
 
 ```
 
 ### Ist ein Paket installiert 
 
 ```
-yum list --installed | grep mariadb 
+dnf list --installed | grep mariadb 
 ```
 
 ### Nach einem Paket suchen 
 
 ```
-yum search mariadb 
+dnf search mariadb 
 
 ```
 
 ### Infos zu einem Paket abrufen 
 
 ```
-yum info mariadb-server
+dnf info mariadb
 ```
-
-### Welche Programmpaket installiert ein bestimmtes Programm
-
-```
-## Beispiel sealert 
-yum whatprovides sealert 
-
-```
-
-
-### Cheatsheet
-
-  * https://access.redhat.com/sites/default/files/attachments/rh_yum_cheatsheet_1214_jcs_print-1.pdf
-
-<div class="page-break"></div>
 
 ### Archive runterladen und entpacken
 
@@ -2146,8 +2530,6 @@ mv master.tar.gz foo
 cd foo
 tar xvf master.tar.gz
 ```
-
-<div class="page-break"></div>
 
 ### Apache installieren (firewall und selinux)
 
@@ -2246,7 +2628,20 @@ ip a
 
 ```
 
-<div class="page-break"></div>
+### mbr sichern mit dd
+
+
+  * Nur bei msdos mbr, nicht gpt
+
+### Walktrough 
+
+```
+## master boot record sichern 
+dd if=/dev/sda bs=512 count=1 of=mbr.img
+
+## Zurückspielen
+dd if=mbr.img bs=512 count=1 of=/dev/sda
+```
 
 ## Firewall und ports
 
@@ -2410,8 +2805,6 @@ firewall-cmd --runtime-to-permanent
   * https://www.linuxjournal.com/content/understanding-firewalld-multi-zone-configurations#:~:text=Going%20line%20by%20line%20through,or%20source%20associated%20with%20it.
   * https://www.answertopia.com/ubuntu/basic-ubuntu-firewall-configuration-with-firewalld/
 
-<div class="page-break"></div>
-
 ### Scannen und Überprüfen mit telnet/nmap
 
 ## Netzwerk/Dienste 
@@ -2428,8 +2821,6 @@ dhclient enp0s8 # ip - Adresse für Schnittstelle enp0s8 holen
 ip a
 ```
 
-<div class="page-break"></div>
-
 ### Auf welchen Ports lauscht mein Server
 
 
@@ -2439,8 +2830,6 @@ lsof -i
 ## alternative
 netstat -tupel
 ```
-
-<div class="page-break"></div>
 
 ### Interface mit nmtu-edit verwalten - schneller Weg
 
@@ -2452,8 +2841,6 @@ nmcli conn show
 ## z.B. wenn enp0s9 als profil vorhanden ist 
 nmtui-edit enp0s8 
 ```
-
-<div class="page-break"></div>
 
 ### Netzwerkinterface auf der Kommandozeile einrichten
 
@@ -2523,8 +2910,6 @@ ip a
 
   * https://www.howtoforge.de/anleitung/wie-man-eine-statische-ip-adresse-unter-centos-8-konfiguriert/
 
-<div class="page-break"></div>
-
 ### Scannen mit nmap
 
 
@@ -2533,8 +2918,6 @@ ip a
 ```
 nmap -PE 192.168.1.2-5
 ```
-
-<div class="page-break"></div>
 
 ## Podman 
 
@@ -2670,8 +3053,6 @@ podman exec -it mycontainer bash
 ### e.g. env
 ```
 
-<div class="page-break"></div>
-
 ## SELinux (Linux härten)
 
 ### SELinux
@@ -2708,8 +3089,6 @@ reboot
 ## Achtung relabeln kann dauern !!! durchaus 5 Minuten 
 ```
 
-<div class="page-break"></div>
-
 ## Tools/Verschiedens 
 
 ### Remote Desktop für Linux / durch Teilnehmer getestet
@@ -2735,8 +3114,6 @@ https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/4/html/re
 
 ```
 
-<div class="page-break"></div>
-
 ### lokale Mails installieren
 
 
@@ -2751,8 +3128,6 @@ cat /var/mail/root
 ## nach der gesendeten Email 
 
 ```
-
-<div class="page-break"></div>
 
 ## Bash/Bash-Scripting 
 
@@ -2775,8 +3150,6 @@ chmod u+x script.sh
 
 ```
 
-<div class="page-break"></div>
-
 ### Ausführen/Verketten von mehreren Befehlen
 
 
@@ -2791,8 +3164,6 @@ apt update && apt upgrade
 ## befehl1 oder befehlt2 (im weitesten Sinne) 
 befehl1 || befehl2
 ```
-
-<div class="page-break"></div>
 
 ### Example with date and if
 
@@ -2827,8 +3198,6 @@ chmod 755 datum  # es müssen x-Rechte (Ausführungsrechte gesetzt sein)
 ### Abwarten, Tee trinken 
 ```
  
-
-<div class="page-break"></div>
 
 ### cronjob (zentral) - crond
 
@@ -2883,8 +3252,6 @@ ls -la /var/log/scripting.log
 
 ```
 
-<div class="page-break"></div>
-
 ## Literatur 
 
 ### Literatur
@@ -2910,4 +3277,58 @@ ls -la /var/log/scripting.log
   * [Bash Programmierung](https://tldp.org/LDP/Bash-Beginners-Guide/html/)
   * [Bash Advanced Programmierung](https://tldp.org/LDP/abs/html/loops1.html)
 
-<div class="page-break"></div>
+## Wartung und Aktualisierung
+
+### Paketmanager yum
+
+
+### Mögliche Paket anzeigen (die installiert sind und installiert werden können)
+
+```
+yum list
+```
+
+### Installierte Pakete anzeigen 
+
+```
+yum list --installed 
+```
+
+### Herausfinden, wie ein Paket heisst, dass ich installieren will
+
+```
+yum list | grep mariadb 
+
+```
+
+### Ist ein Paket installiert 
+
+```
+yum list --installed | grep mariadb 
+```
+
+### Nach einem Paket suchen 
+
+```
+yum search mariadb 
+
+```
+
+### Infos zu einem Paket abrufen 
+
+```
+yum info mariadb-server
+```
+
+### Welche Programmpaket installiert ein bestimmtes Programm
+
+```
+## Beispiel sealert 
+yum whatprovides sealert 
+
+```
+
+
+### Cheatsheet
+
+  * https://access.redhat.com/sites/default/files/attachments/rh_yum_cheatsheet_1214_jcs_print-1.pdf
