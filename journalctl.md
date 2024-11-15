@@ -59,7 +59,7 @@ journalctl -o json-pretty
 ```
 # ubuntu
 journalctl -u ssh.service 
-# centos
+# Rocky / RHEL 
 journalctl -u sshd.service
 
 # sehr schön um alle felder zu sehen 
