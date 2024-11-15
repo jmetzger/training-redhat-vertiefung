@@ -1,5 +1,31 @@
 # SSH absichern 
 
+## Übung 1: Basisabsicherung mit AllowGroups 
+
+```
+groupadd sshadmin
+usermod -aG sshadmin kurs
+```
+
+```
+vi /etc/ssh/sshd_config
+```
+
+```
+# 20241115 - jmetzger - only sshadmin 
+AllowGroups sshadmin
+```
+
+```
+systemctl reload sshd
+```
+
+```
+# Testen... mit Nutzer kurs verbinden
+# per ssh
+# geht das
+```
+
 ## sshd_config // Server
 
 ```
