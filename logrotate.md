@@ -19,5 +19,5 @@ vi output_log
 ```
 
 ```
-logrotate -s /var/log/logstatus
+systemctl start logrotate.service 
 ```
