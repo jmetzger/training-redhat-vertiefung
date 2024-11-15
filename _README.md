@@ -67,12 +67,11 @@
   1. Dienste/Runlevel(Targets verwalten) 
      * [Die wichtigsten systemctl/service](#die-wichtigsten-systemctlservice)
      * [Systemctl - timers](#systemctl---timers)
+     * [Systemctl - timer example](#systemctl---timer-example)
      * [Gegenüberstellung service etc/init.d/ systemctl](#gegenüberstellung-service-etcinitd-systemctl)
      * [Default Editor systemctl setzen](#default-editor-systemctl-setzen)
   1. Systemd 
      * [Die wichtigen Tools für die Kommandozeile (ctl)](#die-wichtigen-tools-für-die-kommandozeile-ctl)
-  1. Firewall
-     * [Arbeiten mit firewalld](#arbeiten-mit-firewalld)
   1. Systemadministration 
      * [Hostname setzen/abfragen](#hostname-setzenabfragen)
      * [ssh absichern](#ssh-absichern)
@@ -102,13 +101,7 @@
      * [Interface mit nmtu-edit verwalten - schneller Weg](#interface-mit-nmtu-edit-verwalten---schneller-weg)
      * [Netzwerkinterface auf der Kommandozeile einrichten](#netzwerkinterface-auf-der-kommandozeile-einrichten)
      * [Scannen mit nmap](#scannen-mit-nmap)
-  1. Podman 
-     * [Podman Walkthrough](#podman-walkthrough)
-  1. SELinux (Linux härten)
-     * [SELinux](#selinux)
-  1. Tools/Verschiedens 
-     * [Remote Desktop für Linux / durch Teilnehmer getestet](https://wiki.ubuntuusers.de/Remmina/)
-     * [Warum umask 002 und 0002 ? - Geschichte](#warum-umask-002-und-0002----geschichte)
+  1. Mails
      * [lokale Mails installieren](#lokale-mails-installieren)
   1. Bash/Bash-Scripting 
      * [Einfaches Script zur Datumsausgabe](#einfaches-script-zur-datumsausgabe)
@@ -129,6 +122,18 @@
   1. Wartung und Aktualisierung
      * [Paketmanager yum](#paketmanager-yum)
 
+  1. Firewall
+     * [Arbeiten mit firewalld](#arbeiten-mit-firewalld)
+
+  1. Podman 
+     * [Podman Walkthrough](#podman-walkthrough)
+
+  1. SELinux (Linux härten)
+     * [SELinux](#selinux)
+    
+  1. Tools/Verschiedens 
+     * [Remote Desktop für Linux / durch Teilnehmer getestet](https://wiki.ubuntuusers.de/Remmina/)
+     * [Warum umask 022 und 0002 ? - Geschichte](#warum-umask-022-und-0002----geschichte)
 
 <div class="page-break"></div>
 
@@ -2013,15 +2018,76 @@ IOSchedulingClass=idle
 
 ```
 
-### Example Reference 
-
-
-  * https://www.tutorialdocs.com/article/systemd-timer-tutorial.html
-
 
 ### Personal Timer (timer for user) 
 
   * https://nielsk.micro.blog/2015/11/11/creating-systemd-timers.html
+
+### Systemctl - timer example
+
+
+### Step 1: Create script 
+
+```
+cd /usr/local/bin 
+nano script.sh 
+```
+
+
+```
+##!/bin/bash
+TAG='FREITAG'
+echo " ---- " 
+date 
+echo $TAG 
+```
+
+### Step 2: Service-Unit für script 
+
+```
+systemctl edit --full --force myscript.service
+```
+
+```
+[Unit]
+Description=myscript 
+
+[Service]
+Type=oneshot 
+ExecStart=/usr/local/bin/script.sh
+```
+
+```
+systemctl start myscript.service 
+```
+
+
+### Step 3: Timer-Unit für script 
+
+```
+systemctl edit --full --force myscript.timer
+```
+
+```
+[Unit]
+Description=myscript timer 
+
+[Timer]
+OnBootSec=80
+OnCalendar=*:0/2
+
+[Install]
+WantedBy=multi-user.target
+```
+
+### Step 4: Timer aktiveren 
+
+```
+systemctl enable myscript.timer
+systemctl start myscript.timer 
+systemctl list-timers 
+```
+
 
 ### Gegenüberstellung service etc/init.d/ systemctl
 
@@ -2069,168 +2135,6 @@ hostnamectl # Hostname einstellen
 timedatectl 
 localectl # locales konfigurieren
 ```
-
-## Firewall
-
-### Arbeiten mit firewalld
-
-
-### Install firewalld
-
-
-```
-## on centos/redhat firewalld should installed
-systemctl status firewalld
-
-## if not, just do it 
-yum install firewalld
-
-```
-
-
-### Is firewalld running ?
-```
-## is it set to enabled ?
-systemctl status firewalld 
-firewall-cmd --state
-```
-
-### Command to control firewalld 
-  
-  * firewall-cmd 
-
-### Best way to add a new rule 
-```
-## Step1: do it persistent -> written to disk 
-firewall-cmd --add-port=82/tcp --permanent  
-
-## Step 2: + reload firewall 
-firewall-cmd --reload 
-```
-
-### Zones documentation 
-
-man firewalld.zones 
-
-### Zones available 
-
-```
-firewall-cmd --get-zones 
-block dmz drop external home internal public trusted work
-```
-
-### Active Zones 
-
-```
-firewall-cmd --get-active-zones
-```
-
-### Show information about all zones that are used 
-```
-firewall-cmd --list-all 
-firewall-cmd --list-all-zones 
-```
-
-
-### Add Interface to Zone ~ Active Zone 
-
-```
-firewall-cmd --zone=public --add-interface=enp0s3 --permanent 
-firewall-cmd --reload 
-firewall-cmd --get-active-zones 
-public
-  interfaces: enp0s3
-
-```
-### Default Zone 
-
-```
-## if not specifically mentioned when using firewall-cmd
-## .. add things to this zone 
-firewall-cmd --get-default-zone
-public
-
-```
-
-### Show services 
-```
-firewall-cmd --get-services 
-```
-
-### What ports a opened in a service 
-
-```
-## Example ssh 
-cd /usr/lib/firewalld/services 
-cat ssh.xml 
-```
-
-### Adding/Removing a service 
-
-```
-firewall-cmd --permanent --zone=public --add-service=ssh
-firewall-cmd --reload 
-firewall-cmd --permanent --zone=public --remove-service=ssh
-firewall-cmd --reload 
-```
-
-### Add/Remove ports 
-```
-## add port
-firewall-cmd --add-port=82/tcp --zone=public --permanent
-firewall-cmd --reload
-
-## remove port
-firewall-cmd --remove-port=82/tcp --zone=public --permanent
-firewall-cmd --reload
-```
-
-### Enable / Disabled icmp 
-```
-firewall-cmd --get-icmptypes
-## none present yet 
-firewall-cmd --zone=public --add-icmp-block-inversion --permanent
-firewall-cmd --reload
-```
-
-### Working with rich rules 
-```
-## Documentation 
-## man firewalld.richlanguage
-
-## throttle connectons 
-firewall-cmd --permanent --zone=public --add-rich-rule='rule family=ipv4 source address=10.0.50.10/32 service name=http log level=notice prefix="firewalld rich rule INFO:   " limit value="100/h" accept' 
-firewall-cmd --reload # 
-firewall-cmd --zone=public --list-all
-
-## port forwarding 
-firewall-cmd --get-active-zones
-firewall-cmd --zone=public --list-all
-firewall-cmd --permanent --zone=public --add-rich-rule='rule family=ipv4 source address=10.0.50.10 forward-port port=42343 protocol=tcp to-port=22'
-firewall-cmd --reload 
-firewall-cmd --zone=public --list-all
-firewall-cmd --remove-service=ssh --zone=public
-
-## 
-
-
-## list only the rich rules 
-firewall-cmd --zone=public --list-rich-rules
-
-## persist all runtime rules 
-firewall-cmd --runtime-to-permanent
-
-
-
-
-```
-
-
-### References 
-
-  * https://www.ispcolohost.com/2016/07/25/blocking-outgoing-ports-with-firewalld/
-  * https://www.linuxjournal.com/content/understanding-firewalld-multi-zone-configurations#:~:text=Going%20line%20by%20line%20through,or%20source%20associated%20with%20it.
-  * https://www.answertopia.com/ubuntu/basic-ubuntu-firewall-configuration-with-firewalld/
 
 ## Systemadministration 
 
@@ -2919,6 +2823,400 @@ ip a
 nmap -PE 192.168.1.2-5
 ```
 
+## Mails
+
+### lokale Mails installieren
+
+
+```
+apt install postfix mailutils 
+## Internet Host 
+
+echo "testmail" | mail -s "subject" root 
+
+## Gucken in der Datei 
+cat /var/mail/root 
+## nach der gesendeten Email 
+
+```
+
+## Bash/Bash-Scripting 
+
+### Einfaches Script zur Datumsausgabe
+
+
+```
+## Mit nano öffnen / datei muss vorher nicht vorhanden sein
+## nano script.sh 
+## Folgendes muss drin stehen, mit 1. Zeile beginnend mit # 
+
+##!/bin/bash 
+date 
+
+## Speichern CRTL + O -> RETURN, CTRL X 
+
+## Ausführbar machen 
+chmod u+x script.sh
+./script.sh # Ausführen und wohlfühlen 
+
+```
+
+### Ausführen/Verketten von mehreren Befehlen
+
+
+```
+## Beide Befehle ausführen, auch wenn der 1. fehlschlägt 
+befehl1; apt upgrade
+
+## 2. Befehl nur ausführen, wenn 1. erfolgreich war.
+apt update && apt upgrade 
+
+## 2. Befehl nur ausführen, wenn der 1. NICHT erfolgreich war 
+## befehl1 oder befehlt2 (im weitesten Sinne) 
+befehl1 || befehl2
+```
+
+### Example with date and if
+
+### Example with function and return value
+
+### Example with test and if
+
+### Example log function
+
+### Example Parameter auslesen
+
+## Timers/cronjobs 
+
+### Cronjob - hourly einrichten
+
+
+### Walkthrough 
+
+```
+cd /etc/cron.hourly 
+## nano datum
+## wichtig ohne Endung 
+## Job wird dann um 17 nach ausgeführt ? 
+
+####
+
+##!/bin/bash
+date >> /var/log/datum.log
+
+chmod 755 datum  # es müssen x-Rechte (Ausführungsrechte gesetzt sein) 
+
+### Abwarten, Tee trinken 
+```
+ 
+
+### cronjob (zentral) - crond
+
+
+### Step 1: Festlegen, wann es laufen soll ?
+
+```
+cd /etc/cron.d 
+### cronjob anlegen
+## Achtung: Dateiendung hier möglich, aber nicht in cron.daily, cron.hourly usw.  
+## ls -la trainingscript
+## root@ubuntu2004-104:/etc/cron.d# ls -la trainingscript
+## -rw-r--r-- 1 root root 471 Mar 26 12:44 trainingscript
+```
+
+```
+nano trainingscript
+```
+
+```
+### cat trainingscript
+SHELL=/bin/sh
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+
+## Example of job definition:
+## .---------------- minute (0 - 59)
+## |  .------------- hour (0 - 23)
+## |  |  .---------- day of month (1 - 31)
+## |  |  |  .------- month (1 - 12) OR jan,feb,mar,apr ...
+## |  |  |  |  .---- day of week (0 - 6) (Sunday=0 or 7) OR sun,mon,tue,wed,thu,fri,sat
+## |  |  |  |  |
+## *  *  *  *  * user-name command to be executed
+*/2  *  *  *  * root  /usr/local/bin/script.sh
+```
+
+### Step 2: Script anlegen
+
+```
+cd /usr/local/bin
+nano script.sh 
+```
+
+```
+##!/bin/bash
+TAG='FREITAG'
+echo " ---- " >> /var/log/scripting.log
+date >> /var/log/scripting.log
+echo $TAG >> /var/log/scripting.log
+```
+
+```
+### Script - Berechtigungen setzten 
+chmod u+x script.sh 
+```
+
+```
+### Scriptausführung  testen 
+### trägt es etwas im Log ein -> /var/log/scripting.log 
+/usr/local/bin/script.sh
+```
+
+### Step 3: Warten 
+
+```
+### nach 2 Minuten log betrachten 
+ls -la /var/log/scripting.log 
+
+### cron daemon braucht nicht reloaded zu werden 
+```
+
+## Literatur 
+
+### Literatur
+
+
+### Literatur 
+
+  * [Linux Grundlagen für Anwender und Administratoren](https://www.tuxcademy.org/product/grd1/)
+  * [Linux Systemadministration I für Anwender und Administratoren](https://www.tuxcademy.org/download/de/adm1/adm1-de-manual.pdf)
+  * [Alle Unterlagen](https://www.tuxcademy.org/media/all/)
+
+### Linux Sicherheit 
+
+  * [Linux Sicherheit - inkl SELinux](http://schulung.t3isp.de/documents/linux-security.pdf)
+
+### Cheatsheet 
+
+  * [..ansonsten Google :o)](https://www.google.com/search?q=bash+cheatsheet)
+
+
+## Wartung und Aktualisierung
+
+### Paketmanager yum
+
+
+### Mögliche Paket anzeigen (die installiert sind und installiert werden können)
+
+```
+yum list
+```
+
+### Installierte Pakete anzeigen 
+
+```
+yum list --installed 
+```
+
+### Herausfinden, wie ein Paket heisst, dass ich installieren will
+
+```
+yum list | grep mariadb 
+
+```
+
+### Ist ein Paket installiert 
+
+```
+yum list --installed | grep mariadb 
+```
+
+### Nach einem Paket suchen 
+
+```
+yum search mariadb 
+
+```
+
+### Infos zu einem Paket abrufen 
+
+```
+yum info mariadb-server
+```
+
+### Welche Programmpaket installiert ein bestimmtes Programm
+
+```
+## Beispiel sealert 
+yum whatprovides sealert 
+
+```
+
+
+### Cheatsheet
+
+  * https://access.redhat.com/sites/default/files/attachments/rh_yum_cheatsheet_1214_jcs_print-1.pdf
+
+## Firewall
+
+### Arbeiten mit firewalld
+
+
+### Install firewalld
+
+
+```
+## on centos/redhat firewalld should installed
+systemctl status firewalld
+
+## if not, just do it 
+yum install firewalld
+
+```
+
+
+### Is firewalld running ?
+```
+## is it set to enabled ?
+systemctl status firewalld 
+firewall-cmd --state
+```
+
+### Command to control firewalld 
+  
+  * firewall-cmd 
+
+### Best way to add a new rule 
+```
+## Step1: do it persistent -> written to disk 
+firewall-cmd --add-port=82/tcp --permanent  
+
+## Step 2: + reload firewall 
+firewall-cmd --reload 
+```
+
+### Zones documentation 
+
+man firewalld.zones 
+
+### Zones available 
+
+```
+firewall-cmd --get-zones 
+block dmz drop external home internal public trusted work
+```
+
+### Active Zones 
+
+```
+firewall-cmd --get-active-zones
+```
+
+### Show information about all zones that are used 
+```
+firewall-cmd --list-all 
+firewall-cmd --list-all-zones 
+```
+
+
+### Add Interface to Zone ~ Active Zone 
+
+```
+firewall-cmd --zone=public --add-interface=enp0s3 --permanent 
+firewall-cmd --reload 
+firewall-cmd --get-active-zones 
+public
+  interfaces: enp0s3
+
+```
+### Default Zone 
+
+```
+## if not specifically mentioned when using firewall-cmd
+## .. add things to this zone 
+firewall-cmd --get-default-zone
+public
+
+```
+
+### Show services 
+```
+firewall-cmd --get-services 
+```
+
+### What ports a opened in a service 
+
+```
+## Example ssh 
+cd /usr/lib/firewalld/services 
+cat ssh.xml 
+```
+
+### Adding/Removing a service 
+
+```
+firewall-cmd --permanent --zone=public --add-service=ssh
+firewall-cmd --reload 
+firewall-cmd --permanent --zone=public --remove-service=ssh
+firewall-cmd --reload 
+```
+
+### Add/Remove ports 
+```
+## add port
+firewall-cmd --add-port=82/tcp --zone=public --permanent
+firewall-cmd --reload
+
+## remove port
+firewall-cmd --remove-port=82/tcp --zone=public --permanent
+firewall-cmd --reload
+```
+
+### Enable / Disabled icmp 
+```
+firewall-cmd --get-icmptypes
+## none present yet 
+firewall-cmd --zone=public --add-icmp-block-inversion --permanent
+firewall-cmd --reload
+```
+
+### Working with rich rules 
+```
+## Documentation 
+## man firewalld.richlanguage
+
+## throttle connectons 
+firewall-cmd --permanent --zone=public --add-rich-rule='rule family=ipv4 source address=10.0.50.10/32 service name=http log level=notice prefix="firewalld rich rule INFO:   " limit value="100/h" accept' 
+firewall-cmd --reload # 
+firewall-cmd --zone=public --list-all
+
+## port forwarding 
+firewall-cmd --get-active-zones
+firewall-cmd --zone=public --list-all
+firewall-cmd --permanent --zone=public --add-rich-rule='rule family=ipv4 source address=10.0.50.10 forward-port port=42343 protocol=tcp to-port=22'
+firewall-cmd --reload 
+firewall-cmd --zone=public --list-all
+firewall-cmd --remove-service=ssh --zone=public
+
+## 
+
+
+## list only the rich rules 
+firewall-cmd --zone=public --list-rich-rules
+
+## persist all runtime rules 
+firewall-cmd --runtime-to-permanent
+
+
+
+
+```
+
+
+### References 
+
+  * https://www.ispcolohost.com/2016/07/25/blocking-outgoing-ports-with-firewalld/
+  * https://www.linuxjournal.com/content/understanding-firewalld-multi-zone-configurations#:~:text=Going%20line%20by%20line%20through,or%20source%20associated%20with%20it.
+  * https://www.answertopia.com/ubuntu/basic-ubuntu-firewall-configuration-with-firewalld/
+
 ## Podman 
 
 ### Podman Walkthrough
@@ -3095,7 +3393,7 @@ reboot
 
   * https://wiki.ubuntuusers.de/Remmina/
 
-### Warum umask 002 und 0002 ? - Geschichte
+### Warum umask 022 und 0002 ? - Geschichte
 
 
 ```
@@ -3113,222 +3411,3 @@ is not necessary since every user has their own private group.
 https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/4/html/reference_guide/s1-users-groups-private-groups
 
 ```
-
-### lokale Mails installieren
-
-
-```
-apt install postfix mailutils 
-## Internet Host 
-
-echo "testmail" | mail -s "subject" root 
-
-## Gucken in der Datei 
-cat /var/mail/root 
-## nach der gesendeten Email 
-
-```
-
-## Bash/Bash-Scripting 
-
-### Einfaches Script zur Datumsausgabe
-
-
-```
-## Mit nano öffnen / datei muss vorher nicht vorhanden sein
-## nano script.sh 
-## Folgendes muss drin stehen, mit 1. Zeile beginnend mit # 
-
-##!/bin/bash 
-date 
-
-## Speichern CRTL + O -> RETURN, CTRL X 
-
-## Ausführbar machen 
-chmod u+x script.sh
-./script.sh # Ausführen und wohlfühlen 
-
-```
-
-### Ausführen/Verketten von mehreren Befehlen
-
-
-```
-## Beide Befehle ausführen, auch wenn der 1. fehlschlägt 
-befehl1; apt upgrade
-
-## 2. Befehl nur ausführen, wenn 1. erfolgreich war.
-apt update && apt upgrade 
-
-## 2. Befehl nur ausführen, wenn der 1. NICHT erfolgreich war 
-## befehl1 oder befehlt2 (im weitesten Sinne) 
-befehl1 || befehl2
-```
-
-### Example with date and if
-
-### Example with function and return value
-
-### Example with test and if
-
-### Example log function
-
-### Example Parameter auslesen
-
-## Timers/cronjobs 
-
-### Cronjob - hourly einrichten
-
-
-### Walkthrough 
-
-```
-cd /etc/cron.hourly 
-## nano datum
-## wichtig ohne Endung 
-## Job wird dann um 17 nach ausgeführt ? 
-
-####
-
-##!/bin/bash
-date >> /var/log/datum.log
-
-chmod 755 datum  # es müssen x-Rechte (Ausführungsrechte gesetzt sein) 
-
-### Abwarten, Tee trinken 
-```
- 
-
-### cronjob (zentral) - crond
-
-
-```
-cd /etc/cron.d 
-### cronjob anlegen
-## Achtung: ohne Dateiendung 
-## ls -la trainingscript
-## root@ubuntu2004-104:/etc/cron.d# ls -la trainingscript
-## -rw-r--r-- 1 root root 471 Mar 26 12:44 trainingscript
-
-## cat trainingscript
-SHELL=/bin/sh
-PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
-
-## Example of job definition:
-## .---------------- minute (0 - 59)
-## |  .------------- hour (0 - 23)
-## |  |  .---------- day of month (1 - 31)
-## |  |  |  .------- month (1 - 12) OR jan,feb,mar,apr ...
-## |  |  |  |  .---- day of week (0 - 6) (Sunday=0 or 7) OR sun,mon,tue,wed,thu,fri,sat
-## |  |  |  |  |
-## *  *  *  *  * user-name command to be executed
-*/2  *  *  *  * root  /root/script.sh
-
-
-### Script anlegen 
-cat script.sh
-##!/bin/bash
-TAG='FREITAG'
-echo " ---- " >> /var/log/scripting.log
-date >> /var/log/scripting.log
-echo $TAG >> /var/log/scripting.log
-
-### Script - Berechtigungen setzten 
-chmod u+x /root/script.sh 
-
-### Scriptausführung  testen 
-### trägt es etwas im Log ein -> /var/log/scripting.log 
-/root/script.sh
-
-
-##### Warten 
-
-
-### nach 2 Minuten log betrachten 
-ls -la /var/log/scripting.log 
-
-### cron daemon braucht nicht reloaded zu werden 
-
-
-```
-
-## Literatur 
-
-### Literatur
-
-
-### Literatur 
-
-  * [Linux Grundlagen für Anwender und Administratoren](https://www.tuxcademy.org/product/grd1/)
-  * [Linux Systemadministration I für Anwender und Administratoren](https://www.tuxcademy.org/download/de/adm1/adm1-de-manual.pdf)
-  * [Alle Unterlagen](https://www.tuxcademy.org/media/all/)
-
-### Linux Sicherheit 
-
-  * [Linux Sicherheit - inkl SELinux](http://schulung.t3isp.de/documents/linux-security.pdf)
-
-### Cheatsheet 
-
-  * [Cheatsheet bash](https://www2.icp.uni-stuttgart.de/~icp/mediawiki/images/b/bd/Sim_Meth_I_T0_cheat_sheet_10_11.pdf)
-  * [..ansonsten Google :o)](https://www.google.com/search?q=bash+cheatsheet)
-
-### Bash - Programmierung 
-
-  * [Bash Programmierung](https://tldp.org/LDP/Bash-Beginners-Guide/html/)
-  * [Bash Advanced Programmierung](https://tldp.org/LDP/abs/html/loops1.html)
-
-## Wartung und Aktualisierung
-
-### Paketmanager yum
-
-
-### Mögliche Paket anzeigen (die installiert sind und installiert werden können)
-
-```
-yum list
-```
-
-### Installierte Pakete anzeigen 
-
-```
-yum list --installed 
-```
-
-### Herausfinden, wie ein Paket heisst, dass ich installieren will
-
-```
-yum list | grep mariadb 
-
-```
-
-### Ist ein Paket installiert 
-
-```
-yum list --installed | grep mariadb 
-```
-
-### Nach einem Paket suchen 
-
-```
-yum search mariadb 
-
-```
-
-### Infos zu einem Paket abrufen 
-
-```
-yum info mariadb-server
-```
-
-### Welche Programmpaket installiert ein bestimmtes Programm
-
-```
-## Beispiel sealert 
-yum whatprovides sealert 
-
-```
-
-
-### Cheatsheet
-
-  * https://access.redhat.com/sites/default/files/attachments/rh_yum_cheatsheet_1214_jcs_print-1.pdf
