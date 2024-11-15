@@ -70,12 +70,6 @@ journalctl -u sshd.service -o json-pretty
 ## journalctl 
 
 ```
-# sehr schön um alle felder zu sehen 
-
-
-# alles was pid xy
-journalctl _PID=5 
-
 # alles seit gestern 
 journalctl --since yesterday 
 journalctl --since now 
