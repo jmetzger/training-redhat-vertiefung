@@ -5,7 +5,7 @@
 ```
 cd /etc/cron.d 
 ## cronjob anlegen
-# Achtung: ohne Dateiendung 
+# Achtung: Dateiendung hier möglich, aber nicht in cron.daily, cron.hourly usw.  
 # ls -la trainingscript
 # root@ubuntu2004-104:/etc/cron.d# ls -la trainingscript
 # -rw-r--r-- 1 root root 471 Mar 26 12:44 trainingscript
