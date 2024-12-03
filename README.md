@@ -7,6 +7,9 @@
      * [Paketmanager dnf](dnf.md)
      * [Modules-Overview-Example](modules/overview.md)
 
+ 1. Systemadministration 
+     * [Hostname setzen/abfragen](hostnamectl.md) 
+
 ## Backlog 
 
   1. Distributionen 
@@ -81,7 +84,6 @@
   1. Systemd 
      * [Die wichtigen Tools für die Kommandozeile (ctl)](systemd-cli-tools.md)
   1. Systemadministration 
-     * [Hostname setzen/abfragen](hostnamectl.md) 
      * [ssh absichern](ssh-absichern.md)
   1. Partitionierung und Filesystem
      * [parted and mkfs.ext4](parted-mkfs.md)
