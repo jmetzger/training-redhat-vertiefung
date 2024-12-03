@@ -39,3 +39,9 @@ dnf search mariadb
 ```
 dnf info mariadb
 ```
+
+## In welchem Paket is ein Programm 
+
+```
+dnf whatprovides ping
+```
