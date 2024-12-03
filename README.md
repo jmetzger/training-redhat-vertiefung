@@ -1,6 +1,13 @@
-# Redhat Grundlagen
+# Redhat Vertiefung 
 
-## Agenda 
+## Agenda
+
+ 1. Wartung und Aktualisierung
+     * [Aktualisierung des Systems](dnf-update.md)
+     * [Paketmanager dnf](dnf.md)
+     * 
+
+## Backlog 
 
   1. Distributionen 
      * [Überblick](overview-distros.md)
