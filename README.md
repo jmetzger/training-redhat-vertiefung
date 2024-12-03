@@ -5,7 +5,7 @@
  1. Wartung und Aktualisierung
      * [Aktualisierung des Systems](dnf-update.md)
      * [Paketmanager dnf](dnf.md)
-     * 
+     * [Modules-Overview-Example](modules/overview.md)
 
 ## Backlog 
 
