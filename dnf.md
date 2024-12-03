@@ -4,6 +4,8 @@
 
 ```
 dnf list
+# weitere Felder anzeigen 
+dnf list --all 
 ```
 
 ## Installierte Pakete anzeigen 
