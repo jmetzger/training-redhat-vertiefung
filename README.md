@@ -11,6 +11,7 @@
      * [Paketmanager dnf](dnf.md)
      * [Modules-Overview-Example](modules/overview.md)
      * [Upgrade Major-Version do-release-upgrade / leapp](major-upgrade-rhel-ubuntu.md)
+     * [Walkthrough Leapp Upgrade RHEL 8.10 -> 9.4](upgrade/in-place/step-by-step.md)
 
  1. Systemadministration 
      * [Hostname setzen/abfragen](hostnamectl.md) 
