@@ -22,3 +22,16 @@ dnf info curl
 dpkg -L package-name  
 rpm -ql openssh-server
 ```
+
+## Update (Patchen des Systems) 
+
+```
+apt update
+apt upgrade
+apt dist-upgrade 
+```
+
+```
+dnf check-update
+dnf update
+```
