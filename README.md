@@ -16,6 +16,7 @@
  1. SELinux
      * [SELinux Überblick und Übung](selinux.md)
      * [SELinux neuen Port httpd](selinux-troubleshooting-centos.md)
+     * [SELinux Policy für Postgresql17](selinux-policy-fuer-postgres17.md)
 
  1. Installation
      * [Automatische Installation mit kickstart](installation/kickstart.md)
