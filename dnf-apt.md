@@ -15,3 +15,10 @@ dnf remove
 apt show curl 
 dnf info curl
 ```
+
+## Installierte Dateien durch Paket 
+
+```
+dpkg -L package-name  
+rpm -ql openssh-server
+```
