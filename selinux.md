@@ -36,7 +36,18 @@ ls -laZ
 cd / 
 touch .autorelabel 
 reboot
-# Achtung relabeln kann dauern !!! durchaus 5 Minuten 
+# Achtung relabeln kann dauern !!! durchaus 5 Minuten
+```
+
+```
+# Example 
+cd /var/www/html
+chcon -t var_t
+ welt.html
+ls  -laZ welt.html
+cd / 
+touch .autorelabel 
+reboot 
 ```
 
 ## Exercise SELinux 
