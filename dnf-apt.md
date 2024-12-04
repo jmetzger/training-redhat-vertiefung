@@ -1,0 +1,2 @@
+# Unterschied apt und dnf
+
