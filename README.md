@@ -13,6 +13,10 @@
      * [Upgrade Major-Version do-release-upgrade / leapp](major-upgrade-rhel-ubuntu.md)
      * [Walkthrough Leapp Upgrade RHEL 8.10 -> 9.4](upgrade/in-place/step-by-step.md)
 
+ 1. SELinux
+     * [SELinux Überblick und Übung](selinux.md)
+     * [SELinux neuen Port httpd](selinux-troubleshooting-centos.md)
+
  1. Installation
      * [Automatische Installation mit kickstart](installation/kickstart.md)
 
