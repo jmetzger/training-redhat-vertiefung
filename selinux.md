@@ -29,7 +29,7 @@ sestatus
 ls -laZ 
 ```
 
-## Für nächsten Boot Kontext-Labels neu setzen 
+## Für nächsten Boot Context-Labels neu setzen 
 
 ```
 # als root
