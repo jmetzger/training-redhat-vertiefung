@@ -10,6 +10,7 @@
      * [Aktualisierung des Systems](dnf-update.md)
      * [Paketmanager dnf](dnf.md)
      * [Modules-Overview-Example](modules/overview.md)
+     * [Upgrade Major-Version do-release-upgrade / leapp](major-upgrade-rhel-ubuntu.md)
 
  1. Systemadministration 
      * [Hostname setzen/abfragen](hostnamectl.md) 
