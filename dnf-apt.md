@@ -35,3 +35,12 @@ apt dist-upgrade
 dnf check-update
 dnf update
 ```
+
+## Download  
+
+```
+dnf download openssh-server
+apt download openssh-server
+```
+
+
