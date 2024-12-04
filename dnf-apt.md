@@ -43,4 +43,18 @@ dnf download openssh-server
 apt download openssh-server
 ```
 
+```
+cd /usr/src
+dnf download openssh-server
 
+mkdir packagecontents; cd packagecontents
+rpm2cpio ../openssh-server*.rpm | cpio -idmv
+ls -la 
+
+# For Reference: the cpio arguments are
+
+# -i = extract
+# -d = make directories
+# -m = preserve modification time
+# -v = verbose
+```
