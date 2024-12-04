@@ -8,3 +8,10 @@ dnf remove
 # Löschen der Konfigrationsdateien
 # d.h. Deinstallieren der Abhängigkeiten
 ```
+
+## Weitere Informationen zu installiertem Paket 
+
+```
+apt show curl 
+dnf info curl
+```
