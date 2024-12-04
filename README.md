@@ -13,6 +13,9 @@
      * [Upgrade Major-Version do-release-upgrade / leapp](major-upgrade-rhel-ubuntu.md)
      * [Walkthrough Leapp Upgrade RHEL 8.10 -> 9.4](upgrade/in-place/step-by-step.md)
 
+ 1. Installation
+     * [Automatische Installation mit kickstart](installation/kickstart.md)
+
  1. Systemadministration 
      * [Hostname setzen/abfragen](hostnamectl.md) 
 
