@@ -4,6 +4,14 @@
 
  * Zeigt an, obwohl selinux aktiviert und wie
 
+## getenforce/ setenforce -> auf permissive setzen 
+
+```
+getenforce
+setenforce 0
+sestatus 
+```
+
 ## Modi 
 
  * disabled 
