@@ -2,6 +2,10 @@
 
 ## Agenda
 
+ 1. Unterschiede Ubuntu / Redhat
+    * [Unterschiede allgemein](unterschiede-ubuntu-redhat.md)
+    * [Unterschiede dnf <-> apt](dnf-apt.md)
+
  1. Wartung und Aktualisierung
      * [Aktualisierung des Systems](dnf-update.md)
      * [Paketmanager dnf](dnf.md)
