@@ -1,8 +1,26 @@
 # SELinux 
 
 
+## Verwendete Typen für Postgresql im Original von Redhat
+
+```
+Daten: postgresql_db_t
+Logs: postgresql_log_t
+Executable: postgresql_exec_t
+Prozess: postgresql_t
+```
+
+## Verwendete Ports 
+
+```
+semanage port -l | grep postgres
+postgresql_port_t              tcp      5432, 9898
+```
 
 ## Gesetzten Filecontexts im Orignal Postgresql von Redhat 
+
+  * Die Filecontexts existieren bereits als config auch wenn postgresql-server nicht installiert mit
+(kommt selinux und Redhat - Installation mit)
 
 ```
 ./files/file_contexts:/usr/bin/(se)?postgres    --      system_u:object_r:postgresql_exec_t:s0
@@ -33,3 +51,4 @@
 ./files/file_contexts:/usr/bin/postgresql-check-db-dir  --      system_u:object_r:postgresql_exec_t:s0
 ./files/file_contexts:/usr/lib/pgsql/test/regress/pg_regress    --      system_u:object_r:postgresql_exec_t:s0
 ```
+
