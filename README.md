@@ -18,6 +18,7 @@
      * [SELinux neuen Port httpd](selinux-troubleshooting-centos.md)
      * [SELinux Policy für Postgresql17 (not completely)](selinux-policy-fuer-postgres17.md)
      * [SELinux Policy für Postgresql17 - Variante 2 - besser](selinux-policy-fuer-postgres17-variante2.md)
+     * [SELinux Domain (Apache erlauben)](selinux-permissive-domain.md)
 
  1. Installation
      * [Automatische Installation mit kickstart](installation/kickstart.md)
