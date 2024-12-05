@@ -8,7 +8,7 @@
 systemctl status firewalld
 
 # if not, just do it 
-yum install firewalld
+dnf install -y firewalld
 
 ```
 
