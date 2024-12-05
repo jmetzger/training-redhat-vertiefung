@@ -93,7 +93,7 @@ cd /usr/lib/firewalld/services
 cat ssh.xml 
 ```
 
-## Adding/Removing a service 
+## Adding/Removing a service (Variante 1: nicht so schön)
 
 ```
 firewall-cmd --permanent --zone=public --add-service=ssh
@@ -101,6 +101,38 @@ firewall-cmd --reload
 firewall-cmd --permanent --zone=public --remove-service=ssh
 firewall-cmd --reload 
 ```
+
+## Arbeiten mit runtime und permanenter config (für service) 
+
+```
+# nur für runtime setzen 
+firewall-cmd --zone=public --add-service=http
+# nur die runtime anzeigen
+firewall-cmd --list-all
+# nur die permanente konfiguration anzeigen
+firewall-cmd --list-all --permanent
+# Das wieder laden, was in der Konfiguration steht 
+firewall-cmd --reload
+```
+
+## Service aktivieren und persistieren 
+
+```
+firewall-cmd --add-service=http --zone=public
+# runtime
+firewall-cmd --list-all
+# permanent
+firewall-cmd --list-all --permanent
+# runtime-to-permanent
+firewall-cmd --runtime-to-permanent
+
+```
+
+
+# firewall-cmd --permanent --zone=public --remove-service=ssh
+```
+
+
 
 ## Add/Remove ports 
 ```
