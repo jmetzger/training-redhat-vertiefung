@@ -1,5 +1,4 @@
-# SELinux 
-
+# SELinux (einfache Variante um postgresql-17 vom Maintainer unter SELinux laufen zu lassen 
 
 ## Verwendete Typen für Postgresql im Original von Redhat
 
