@@ -127,7 +127,7 @@ firewall-cmd --runtime-to-permanent
 
 ```
 
-
+```
 # firewall-cmd --permanent --zone=public --remove-service=ssh
 ```
 
