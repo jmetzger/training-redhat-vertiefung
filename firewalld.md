@@ -12,7 +12,6 @@ dnf install -y firewalld
 
 ```
 
-
 ## Is firewalld running ?
 ```
 # is it set to enabled ?
