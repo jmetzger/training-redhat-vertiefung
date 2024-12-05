@@ -79,7 +79,10 @@ public
 
 ## Show services 
 ```
-firewall-cmd --get-services 
+firewall-cmd --get-services
+firewall-cmd --info-service=ssh
+# Mit description
+firewall-cmd --info-service=ssh --verbose 
 ```
 
 ## What ports a opened in a service 
