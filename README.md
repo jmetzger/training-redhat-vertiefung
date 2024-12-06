@@ -22,8 +22,11 @@
      * [SELinux Domain (Apache erlauben) auf permissive](selinux-permissive-domain.md)
    
  1. firewalld
-      * [firewalld](firewalld.md)
-    
+     * [firewalld](firewalld.md)
+
+ 1. systemctl / journalctl
+     * [journalctl](journalctl.md) 
+
  1. Installation
      * [Automatische Installation mit kickstart](installation/kickstart.md)
 
