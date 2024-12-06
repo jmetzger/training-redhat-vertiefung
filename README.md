@@ -21,8 +21,10 @@
      * [SELinux Policy für Postgresql17 - Variante 2 - besser](selinux-policy-fuer-postgres17-variante2.md)
      * [SELinux Domain (Apache erlauben) auf permissive](selinux-permissive-domain.md)
    
- 1. firewalld
+ 1. firewalld / network (nmcli/nmtui) 
      * [firewalld](firewalld.md)
+     * [nmcli](nmcli.md)
+     * [Dokumentation nmcli von Redhat](https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/7/html/networking_guide/sec-configuring_ip_networking_with_nmcli#permanently-configuring-a-device-as-unmanaged-in-networkmanager)
 
  1. systemctl / journalctl
      * [journalctl](journalctl.md) 
