@@ -1,7 +1,40 @@
-# Redhat Grundlagen
+# Redhat Vertiefung 
 
 
 ## Agenda
+ 1. Unterschiede Ubuntu / Redhat
+    * [Unterschiede allgemein](unterschiede-ubuntu-redhat.md)
+    * [Unterschiede dnf <-> apt](dnf-apt.md)
+
+ 1. Wartung und Aktualisierung
+     * [Aktualisierung des Systems](#aktualisierung-des-systems)
+     * [Paketmanager dnf](#paketmanager-dnf)
+     * [Modules-Overview-Example](#modules-overview-example)
+     * [Upgrade Major-Version do-release-upgrade / leapp](#upgrade-major-version-do-release-upgrade--leapp)
+     * [Walkthrough Leapp Upgrade RHEL 8.10 -> 9.4](#walkthrough-leapp-upgrade-rhel-810-->-94)
+     * [dnf automatic](#dnf-automatic)
+
+ 1. SELinux
+     * [SELinux Überblick und Übung](#selinux-überblick-und-übung)
+     * [SELinux neuen Port httpd](#selinux-neuen-port-httpd)
+     * [SELinux Policy für Postgresql17 (not completely)](#selinux-policy-für-postgresql17-not-completely)
+     * [SELinux Policy für Postgresql17 - Variante 2 - besser](#selinux-policy-für-postgresql17---variante-2---besser)
+     * [SELinux Domain (Apache erlauben) auf permissive](#selinux-domain-apache-erlauben-auf-permissive)
+   
+ 1. firewalld
+     * [firewalld](#firewalld)
+
+ 1. systemctl / journalctl
+     * [journalctl](#journalctl)
+
+ 1. Installation
+     * [Automatische Installation mit kickstart](#automatische-installation-mit-kickstart)
+
+ 1. Systemadministration 
+     * [Hostname setzen/abfragen](#hostname-setzenabfragen)
+
+## Backlog 
+
   1. Distributionen 
      * [Überblick](#überblick)
   1. Verzeichnisse und Dateitypen 
@@ -74,7 +107,6 @@
   1. Systemd 
      * [Die wichtigen Tools für die Kommandozeile (ctl)](#die-wichtigen-tools-für-die-kommandozeile-ctl)
   1. Systemadministration 
-     * [Hostname setzen/abfragen](#hostname-setzenabfragen)
      * [ssh absichern](#ssh-absichern)
   1. Partitionierung und Filesystem
      * [parted and mkfs.ext4](#parted-and-mkfsext4)
@@ -137,6 +169,1221 @@
      * [Warum umask 022 und 0002 ? - Geschichte](#warum-umask-022-und-0002----geschichte)
 
 <div class="page-break"></div>
+
+### Aktualisierung des Systems
+
+
+### Updaten des Systems 
+
+```
+## -y without asking 
+dnf -y update
+## or
+dnf -y upgrade
+### is the same
+```
+
+### Paketmanager dnf
+
+
+### Mögliche Paket anzeigen (die installiert sind und installiert werden können)
+
+```
+dnf list
+## weitere Felder anzeigen 
+dnf list --all 
+```
+
+### Installierte Pakete anzeigen 
+
+```
+dnf list --installed 
+```
+
+### Herausfinden, wie ein Paket heisst, dass ich installieren will
+
+```
+dnf list | grep mariadb 
+
+```
+
+### Ist ein Paket installiert 
+
+```
+dnf list --installed | grep mariadb 
+```
+
+### Nach einem Paket suchen 
+
+```
+dnf search mariadb 
+
+```
+
+### Infos zu einem Paket abrufen 
+
+```
+dnf info mariadb
+```
+
+### In welchem Paket is ein Programm 
+
+```
+dnf whatprovides ping
+```
+
+### Modules-Overview-Example
+
+
+  * Applikation streams where introduced in Redhat 8
+
+### Advantages 
+
+  * You can switch to a different version 
+  * More new version are introduced, and you can decide which version to use
+
+### Disadvantages 
+
+  * Only one version of the software can be installed at a time
+
+### Overview over different software packages and versions 
+
+
+### Modules, Stream and profiles 
+
+  * module: Name of the software (e.g. postgresql)
+  * stream: The version (e.g. 15)
+  * profile: Different use cases, e.g. client / server
+
+### Walkthrough Postgresql 
+
+#### Step 1: What modules are available ? 
+
+```
+dnf module list
+```
+
+#### Step 2: List all versions for postgresql 
+
+```
+dnf module info postgresql
+```
+
+#### Step 3: Try to install a version  
+
+```
+## This does not work 
+dnf install @postgresql
+```
+
+#### Step 4: We will decided for a version 
+
+ * Format for a specific version: dnf install @module:version/profile
+
+```
+## for the profile we take the default -> server 
+dnf install @postgresql:15
+```
+
+#### Step 5: Switch to a newer version 
+
+```
+dnf module reset postgresql
+## this does not yet install the components
+dnf list --installed | grep postgresql
+```
+
+```
+## now install the newer version
+dnf install @postgresql:16
+dnf list --installed | grep postgresql 
+```
+
+```
+## just to be sure, all modules do have the proper version
+dnf distro-sync 
+```
+
+#### Step 6: switch back to version 15 
+
+```
+dnf module reset postgresql
+dnf install @postgresql:15
+```
+
+```
+## now check for the installed version
+dnf list --installed | grep postgresql
+```
+
+### Reference 
+
+  * https://www.redhat.com/en/blog/introduction-appstreams-and-modules-red-hat-enterprise-linux
+
+### Upgrade Major-Version do-release-upgrade / leapp
+
+
+### Ubuntu 
+
+  * do-release-upgrade
+
+#### Ref:
+
+  * https://www.cyberciti.biz/faq/upgrade-ubuntu-20-04-lts-to-22-04-lts/
+
+### Redhat 
+
+  * leapp
+
+
+### Walkthrough Leapp Upgrade RHEL 8.10 -> 9.4
+
+
+### Step 1: What is not supported (but the leapp preupgrade will show you !)
+
+  * Find out if there is something that is not supported, e.g.
+    * Having ansible tower installed (migration process is different) 
+    * wanting to shift from bios tu uefi boot
+   
+### Step 2: Vorbereitungsschritte
+
+  1. Es sollte kein Ansible/Puppet Änderung am Systme machen
+  1. Von auch Rhel 7 auf RHEL 8 auch mit LEAPP durchgeführen ?
+     * Dann löschen: sudo rm -rf /root/tmp_leapp_py3
+  1. Ist Abonnenment da ?
+     * sudo subscription-manager list --installed  -> Status: subskribiert
+
+### Step 3: Make backup of system 
+
+  * In our case, we will make a "Sicherung" in virtualbox
+  * In addition we will create a clone beforehand 
+
+### Step 4: Sicherstellen, dass beide Repos aktiviert sind, Stand sperren und update durchführen  
+
+```
+sudo subscription-manager repos --enable rhel-8-for-x86_64-baseos-rpms --enable rhel-8-for-x86_64-appstream-rpms
+sudo subscription-manager release --set 8.10
+sudo dnf update
+```
+
+### Step 5: leapp-upgrade installiere und alle Anwendungssperren entfernen 
+
+```
+sudo dnf install -y leapp-upgrade
+## if you get command not found, this dnf plugin is not installed
+## that's o.k. , then you also will have no versionlocks 
+dnf versionlock clear  
+```
+
+### Step 6: Disable AllowDriftingZone in Firewall 
+
+```
+cat /etc/firewalld/firewalld.conf | grep -i allowzonedrifting 
+## if you have yes here, disable -> set to no  (with vi or nano) 
+```
+
+### Step 7: Do the preupdate checks with leapp 
+
+```
+## it might take its time, so verbose and debug might be a good idea.
+## ON MY SYSTEM it TOOK 35 minutes and then 2nd on 17 minutes  
+sudo leapp preupgrade --debug --verbose --target 9.4
+## Report is written to :
+## /var/log/leapp/leapp-report.json
+## And also writes results to the screen 
+```
+
+### (Optional) Step 8: View report in cockpit 
+
+```
+dnf install cockpit-leapp
+```
+
+#### Step 9: Upcoming error Processor: Unsupported Family 
+
+```
+## will adjust the configuration/checks file in leap, because we now this processor is working
+## we installed it under RHEL 9 already
+## Looks like a typical error in virtualbox
+```
+
+
+  * https://access.redhat.com/solutions/7052222
+
+#### Step 9.5: Upgrading system 
+
+```
+sudo leapp upgrade --debug --verbose --target 9.4
+```
+
+#### Step 9.6: Analyze errors: Possible error: cannot open database file 
+
+  * Database file cannot be opened because of too many open files
+
+```
+## default seems to be 1024 - which could be too small
+## shows max for open file descriptors 
+ulimit -n
+
+## rerun command with strace, to see the problems
+strace -fttTvyyo /tmp/leapp.strace -s 128 leapp upgrade --debug --verbose --target 9.4
+## You will see the errors here
+grep "1 EMFILE" /tmp/leapp.strace
+```
+
+
+  * https://access.redhat.com/solutions/6878881
+
+#### Step 9.7: Fix error 
+
+```
+ulimit -n 16384
+## rerun upgrade 
+leapp upgrade --debug --verbose --target 9.4
+```
+
+#### Step 10: Reboot into initramfs (for update)
+
+  * There was a special initramfs created to complete the upgrade
+
+```
+reboot
+```
+
+#### Step 11: Post-Upgrade check 
+
+```
+cat /etc/redhat-release
+uname -r
+subscription-manager list --installed
+subscription-manager release
+```
+
+  * There are some notes, about it here: https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/html/upgrading_from_rhel_8_to_rhel_9/verifying-the-post-upgrade-state_upgrading-from-rhel-8-to-rhel-9#verifying-the-post-upgrade-state_upgrading-from-rhel-8-to-rhel-9
+
+### Step 12: Post-upgrade cleanup (Part 1)
+
+  * We need to do some cleanup
+
+```
+##  1. Delete all packages from the exclude list 
+dnf config-manager --save --setopt exclude=''
+```
+
+### Step 13: Post-upgrade cleanup (Part 2)
+
+```
+## Locate the packages from RHEL 8 
+rpm -qa | grep -e '\.el[78]' | grep -vE '^(gpg-pubkey|libmodulemd|katello-ca-consumer)' | sort
+```
+
+```
+## Delete all the packages from RHEL 8
+dnf remove $(rpm -qa | grep -e '\.el[78]' | grep -vE '^(gpg-pubkey|libmodulemd|katello-ca-consumer)' | sort)
+```
+
+```
+dnf remove leapp-deps-el9 leapp-repository-deps-el9
+```
+
+### Optional: Step 14: Delete related upgrade data 
+
+  * Eventually, you want to do this later, when everything is o.k.
+
+```
+rm -rf /var/log/leapp /root/tmp_leapp_py3 /var/lib/leapp
+```
+
+### Step 15: Update Kernel Command (set new default) 
+
+```
+BOOT_OPTIONS="$(tr -s "$IFS" '\n' </proc/cmdline | grep -ve '^BOOT_IMAGE=' -e '^initrd=' | tr '\n' ' ')"
+echo $BOOT_OPTIONS > /etc/kernel/cmdline
+```
+
+### Step 16: Delete existing initramfs for rescue mode and create new one 
+
+```
+rm /boot/vmlinuz-*rescue* /boot/initramfs-*rescue* 
+```
+```
+/usr/lib/kernel/install.d/51-dracut-rescue.install add "$(uname -r)" /boot "/boot/vmlinuz-$(uname -r)"
+```
+
+### Step 17: Verify new rescure system 
+
+```
+ls /boot/vmlinuz-*rescue* /boot/initramfs-*rescue*
+lsinitrd /boot/initramfs-*rescue*.img | grep -qm1 "$(uname -r)/kernel/" && echo "OK" || echo "FAIL"
+```
+
+```
+## check if entry in bootmenu refers to the right rescue kernel
+grubby --info $(ls /boot/vmlinuz-*rescue*)
+```
+
+### Step 18: Check and activate security profile 
+
+```
+## Are there any denials ? 
+ausearch -m AVC,USER_AVC -ts boot
+## set tto enforcing
+vi /etc/selinux/config
+```
+
+```
+## from permissive 
+.... enforcing
+```
+
+```
+reboot
+```
+
+### Reference:
+
+  * [https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/html/upgrading_from_rhel_8_to_rhel_9/index](https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/html-single/upgrading_from_rhel_8_to_rhel_9/index#planning-an-upgrade_planning-an-upgrade-to-rhel-9)
+  * https://www.computerweekly.com/de/ratgeber/Wie-man-RHEL-8-auf-RHEL-9-aktualisiert
+
+### dnf automatic
+
+
+```
+dnf install dnf-automatic
+vim /etc/dnf/automatic.conf
+
+download_updates = yes
+apply_updates = yes
+
+systemctl start dnf-automatic.timer 
+systemctl enable dnf-automatic.timer
+
+## 1x vorab testen
+systemctl start dnf-automatic.service 
+
+## Dauert einen Moment 
+systemctl status dnf-automatic.service 
+journalctl -eu dnf-automatic.service
+```
+
+### SELinux Überblick und Übung
+
+
+### sestatus
+
+ * Zeigt an, obwohl selinux aktiviert und wie
+
+### getenforce/ setenforce -> auf permissive setzen 
+
+```
+getenforce
+setenforce 0
+sestatus 
+```
+
+### Modi 
+
+ * disabled 
+ * enforcing (enabled)
+ * permissive (enabled) 
+
+### Persistente Konfiguration 
+
+```
+/etc/selinux/config
+```
+### Dateien mit context anzeigen
+
+```
+ls -laZ 
+```
+
+### Für nächsten Boot Context-Labels neu setzen 
+
+```
+## als root
+cd / 
+touch .autorelabel 
+reboot
+## Achtung relabeln kann dauern !!! durchaus 5 Minuten
+```
+
+```
+## Example 
+cd /var/www/html
+chcon -t var_t
+ welt.html
+ls  -laZ welt.html
+cd / 
+touch .autorelabel 
+reboot 
+```
+
+### Exercise SELinux 
+
+#### Change context and restore it 
+```
+## Requirements - selinux must be enabled
+## and auditd must run 
+## find out 
+getenforce 
+systemctl status auditd
+
+cd /var/www/html
+echo "hallo welt" > welt.html 
+## Dann im browser aufrufen
+## z.B. 192.168.56.103/welt.html 
+
+chcon -t var_t welt.html
+## includes context from welt.html 
+ls -laZ welt.html
+## when enforcing fehler beim aufruf im Browser 
+
+## You can find log entries like so
+cat /var/log/audit/audit.log
+## show all entries caused by executable httpd 
+ausearch -c httpd 
+
+## herstellen auf basis der policies 
+restorecon -vr /var/www/html 
+```
+
+#### Analyze 
+
+```
+## sesearch is needed,
+## install if not present
+dnf whatprovides sesearch
+dnf install setools-console
+```
+
+
+```
+## Under which type/domain does httpd run 
+ps auxZ | grep httpd
+
+## What is the context of the file 
+ls -Z /var/www/html/welt.html 
+
+## So is http_t - domain allowed to access ?
+sesearch --allow --source httpd_t --target httpd_sys_content_t --class file
+sesearch -A -s httpd_t -t httpd_sys_content_t -C file 
+## Yes !
+## output
+allow httpd_t httpd_sys_content_t:file { lock ioctl read getattr open
+};
+allow httpd_t httpdcontent:file { create link open append rename write
+ioctl lock getattr unlink setattr read }; [ ( httpd_builtin_scripting
+&& httpd_unified && httpd_enable_cgi ) ]:True
+...
+## so let's check
+echo "<html><body>hello</body></html>" > /var/www/html/index.html
+chmod 775 /var/www/html/index.html
+## open in browser:
+## e.g.
+## http://<yourip>
+## you should get an output -> hello ;o)
+## Now change the type of the file
+## ONLY changes temporarily
+## NEXT restorecon breaks it.
+
+chcon --type var_t /var/www/html/index.html
+ls -Z /var/www/html/index.html
+## open in browser again
+## http://<yourip>
+## NOW -> you should have a permission denied
+## Why ? -> var_t is not one of the context the webserver domain
+(http_t) is not authorized to connect to
+## Doublecheck
+sesearch --allow --source httpd_t --target var_t --class file
+## -> no output here -> no access
+## Restore again
+restorecon -v /var/www/html/index.html
+## output
+## Relabeled /var/www/html/index.html from
+unconfined_u:object_r:var_t:s0 to
+unconfined_u:object_r:httpd_sys_content_t:s0
+ls -Z /var/www/html/index.html
+## output
+unconfined_u:object_r:httpd_sys_content_t:s0 /var/www/html/index.html
+## open in browser again
+## http://<yourip>
+## Now testpage works again
+```
+
+
+### SELinux neuen Port httpd
+
+
+### General saying 
+
+```
+### Assumption: Golden Rule of Centos/Redhat 
+
+!!! If everything looks nice (permissions), but DOES NOT START 
+it MIGHT BE selinux <-- !!! 
+```
+### Walkthrough with debugging 
+
+#### Step 1:
+
+```
+## /etc/httpd/conf/httpd.conf
+## Ergänzen 
+Listen 83 
+
+## Startet nicht neu ....
+systemctl restart httpd
+
+```
+
+
+#### Step 2: Find problems with sealert 
+
+```
+dnf whatprovides sealert 
+dnf install -y setroubleshoot-server 
+cd /var/log/audit
+
+## this take a little while - grab some coffee 
+sealert -a audit.log > report.txt
+```
+
+#### Step 3: Debug and fix 
+
+```
+## sealert -a /var/log/audit/audit.log > report.txt
+## Extract advice from file 
+## find http_port_t
+semanage port -l | grep 80
+## an advice how to fix from report.txt
+semanage port -a -t http_port_t -p tcp 83
+semanage port -l | grep 83
+systemctl start httpd
+## now apache also listens on port 83
+lsof -i
+## also add port in firewall if running
+firewall-cmd --state
+## add to runtime 
+firewall-cmd --add-port=83/tcp
+## make permanent 
+firewall-cmd --runtime-to-permanent 
+```
+
+  * [Alternative way using sealert](selinux-sealert.md) 
+
+
+### SELinux Policy für Postgresql17 (not completely)
+
+
+```
+https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/html/using_selinux/writing-a-custom-selinux-policy_using-selinux#creating-and-enforcing-an-selinux-policy-for-a-custom-application_writing-a-custom-selinux-policy
+## Neue Policy zu erstellen 
+dnf install -y policycoreutils-devel
+dnf install -y curl nc rpm-build 
+## Erste Schritt: läuft prozess unter selinux 
+ps auxZ | grep pgsql 
+## unconfined - not running under selinux 
+/usr/pgsql-17/bin/postgres -D /var/lib/pgsql/17/data/
+unconfined_u:unconfined_r:unconfined_t
+```
+
+### Fix für Rocky 9 
+
+```
+"quick-and-dirty-fix" für Rocky:
+sudo sed -i s/"\$rltype"/".5"/g /etc/yum.repos.d/rocky*.repo
+## Kudos go to D. 
+```
+
+```
+## Erstellt die entsprechenden Files 
+## generate hat verschiedene Optionen 
+## Der Dienst muss laufen 
+sepolicy generate --init /usr/pgsql-17/bin/postgres
+```
+
+```
+## Danach alles erstellen mit
+./postgres.sh
+```
+
+### Referenzen
+
+  * https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/html/using_selinux/writing-a-custom-selinux-policy_using-selinux#creating-and-enforcing-an-selinux-policy-for-a-custom-application_writing-a-custom-selinux-policy
+
+### SELinux Policy für Postgresql17 - Variante 2 - besser
+
+
+### Verwendete Typen für Postgresql im Original von Redhat
+
+```
+Daten: postgresql_db_t
+Logs: postgresql_log_t
+Executable: postgresql_exec_t
+Prozess: postgresql_t
+```
+
+### Verwendete Ports 
+
+```
+semanage port -l | grep postgres
+postgresql_port_t              tcp      5432, 9898
+```
+
+### Gesetzten Filecontexts im Orignal Postgresql von Redhat 
+
+  * Die Filecontexts existieren bereits als config auch wenn postgresql-server nicht installiert mit
+(kommt selinux und Redhat - Installation mit)
+
+```
+./files/file_contexts:/usr/bin/(se)?postgres    --      system_u:object_r:postgresql_exec_t:s0
+./files/file_contexts:/var/lib/pgsql(/.*)?      system_u:object_r:postgresql_db_t:s0
+./files/file_contexts:/etc/postgresql(/.*)?     system_u:object_r:postgresql_etc_t:s0
+./files/file_contexts:/var/lib/pgsql/.*\.log    system_u:object_r:postgresql_log_t:s0
+./files/file_contexts:/usr/bin/initdb(\.sepgsql)?       --      system_u:object_r:postgresql_exec_t:s0
+./files/file_contexts:/var/lib/sepgsql(/.*)?    system_u:object_r:postgresql_db_t:s0
+./files/file_contexts:/var/lib/postgres(ql)?(/.*)?      system_u:object_r:postgresql_db_t:s0
+./files/file_contexts:/etc/rc\.d/init\.d/(se)?postgresql        --      system_u:object_r:postgresql_initrc_exec_t:s0
+./files/file_contexts:/var/log/rhdb/rhdb(/.*)?  system_u:object_r:postgresql_log_t:s0
+./files/file_contexts:/var/log/postgresql(/.*)? system_u:object_r:postgresql_log_t:s0
+./files/file_contexts:/var/run/postgresql(/.*)? system_u:object_r:postgresql_var_run_t:s0
+./files/file_contexts:/etc/sysconfig/pgsql(/.*)?        system_u:object_r:postgresql_etc_t:s0
+./files/file_contexts:/var/log/postgres\.log.*  --      system_u:object_r:postgresql_log_t:s0
+./files/file_contexts:/usr/share/jonas/pgsql(/.*)?      system_u:object_r:postgresql_db_t:s0
+./files/file_contexts:/var/lib/pgsql/logfile(/.*)?      system_u:object_r:postgresql_log_t:s0
+./files/file_contexts:/var/lib/pgsql/data/log(/.*)?     system_u:object_r:postgresql_log_t:s0
+./files/file_contexts:/usr/lib/postgresql/bin/.*        --      system_u:object_r:postgresql_exec_t:s0
+./files/file_contexts:/var/log/sepostgresql\.log.*      --      system_u:object_r:postgresql_log_t:s0
+./files/file_contexts:/var/lib/pgsql/data/pg_log(/.*)?  system_u:object_r:postgresql_log_t:s0
+./files/file_contexts:/usr/lib/pgsql/test/regress(/.*)? system_u:object_r:postgresql_db_t:s0
+./files/file_contexts:/usr/lib/systemd/system/postgresql.*      --      system_u:object_r:postgresql_unit_file_t:s0
+./files/file_contexts:/usr/share/munin/plugins/postgres_.*      --      system_u:object_r:services_munin_plugin_exec_t:s0
+./files/file_contexts:/usr/bin/pg_ctl   --      system_u:object_r:postgresql_exec_t:s0
+./files/file_contexts:/usr/libexec/postgresql-ctl       --      system_u:object_r:postgresql_exec_t:s0
+./files/file_contexts:/var/lib/sepgsql/pgstartup\.log   --      system_u:object_r:postgresql_log_t:s0
+./files/file_contexts:/usr/bin/postgresql-check-db-dir  --      system_u:object_r:postgresql_exec_t:s0
+./files/file_contexts:/usr/lib/pgsql/test/regress/pg_regress    --      system_u:object_r:postgresql_exec_t:s0
+```
+
+### Installation von postgres und Testlauf (ohne SELinux)
+
+```
+## Sourcen einrichten
+```
+
+
+```
+dnf install -y postgresql17-server postgresql17-contrib
+/usr/pgsql-17/bin/postgres
+```
+
+```
+## Testlauf 
+systemctl start postgresql-17 
+systemctl status postgresql-17 
+systemctl cat postgresql-17 | grep -i ^ExecStart 
+```
+
+### postgres binary testweise auf richtiges Labels setzen (postgresql_exec_t) 
+
+  * Executable hat label postgresql_exec_t beim Starten gibt einen Domain Transfer, so dass
+  * der Prozess unter postgresql_t läuft 
+
+```
+cd /usr/pgsql-17/bin/
+chcon -t postgresql_exec_t postgres
+```
+
+```
+## Starten und Prozess raussuchen
+systemctl start postgresql-17
+ps auxZ | postgres
+```
+
+```
+## Läuft
+```
+
+
+### Datenverzeichnis auf falsche Label setzen -> var_t 
+
+```
+chcon -t var_t /var/lib/pgsql/17/data
+```
+
+```
+systemctl stop postgresql-17
+systemctl start postgresql-17
+```
+
+```
+ACHTUNG: startet nicht, da Label Datenverzeichnis für prozess postgres nicht erlaubt
+(Es muss: postgresql_db_t sein, ist aber var_t
+```
+
+```
+## Entweder
+cat /var/log/audit/audit.log | grep postgres
+## oder
+ausearch -c postgres
+ausearch --comm postgres
+## uns interessiert nur der type: AVC
+```
+
+```
+## ---> denied
+## AVC -> ACCESS VECTOR 
+type=AVC msg=audit(1733391385.830:1195): avc:  denied  { write } for  pid=31310 comm="postgres" name="data" dev="dm-0" ino=35401409 scontext=system_u:system_r:postgresql_t:s0 tcontext=system_u:object_r:var_t:s0 tclass=dir permissive=0
+```
+
+### Label mit restorecon zurücksetzen 
+
+   * Wichtige: Info SELinux bringt mit der Basisinstallation von Redhat bereits die richtigen Label-Definition mit.
+   * Auch wenn postgres (Version von Redhat nicht installiert ist)
+   * Diese Definitionen passen auch für die Files die mit postgresql17-server (vom Original Maintainer -> postgres) installiert werden, auch wenn die Filestruktur noch weitere Unterordner kennt (z.B. 17/data)
+
+```
+## -v verbose 
+restorecon -vr /var/lib/pgsql/17/data 
+```
+
+```
+restorecon -vr /var/lib/pgsql/17/data
+Relabeled /var/lib/pgsql/17/data from system_u:object_r:var_t:s0 to system_u:object_r:postgresql_db_t:s0
+```
+
+```
+## Jetzt startet postgresql-17 auch wieder
+systemctl start postgresql-17
+systemctl status postgresql-17
+```
+
+### Binary in der config mit richtigen Label setzen 
+
+```
+semanage fcontext -a -t postgresql_exec_t  "/usr/pgsql-(.*)/bin/postgres"
+```
+
+```
+## testweise falsches Label setzen
+chcon -t httpd_exec_t postgres
+systemctl stop postgresql-17
+## Startet nicht, weil httpd_t nicht auf das Datenverzeichnis von postgres zugreifen darf 
+systemctl start postgresql-17
+```
+
+```
+restorecon -vr /usr/pgsql-17/bin/
+```
+
+```
+## Jetzt startet das ganze
+systemctl start postgresql-17
+```
+
+
+### Anderes Datenverzeichnis setzen für SELinux und Postgresql 
+
+```
+semanage fcontext -a -t postgresql_db_t  "/db_data(/.*)?"
+semanage fcontext -a -t postgresql_log_t  "/db_data/pg_log/(*.)log"
+
+## Das kann man testen mit
+
+ls -laZ /db_data
+```
+
+
+
+
+
+
+
+### SELinux Domain (Apache erlauben) auf permissive
+
+
+### Walkthrough 
+
+#### Identify domain/type in Rocky/RHEL 
+
+```
+dnf install httpd
+systemctl start httpd
+firewall-cmd --add-service=http
+```
+
+```
+cd /var/www/html
+echo "hallo welt" >> welt.html
+chcon -t var_t welt.html 
+```
+
+```
+Im Browser öffnen -> permission denied
+```
+
+```
+ps auxZ | grep httpd 
+```
+
+```
+semanage permissive -a httpd_t
+```
+
+```
+Im browser testen -> geht jetzt 
+```
+
+```
+semodule -l | grep permissive
+```
+
+```
+permissive_httpd_t 1.0 
+permissivedomains 1.0.0
+```
+
+```
+## wieder scharf schalten 
+semanage permissive -d httpd_t
+```
+
+### Reference 
+
+  * https://selinuxproject.org/page/PermissiveDomainRecipe
+
+### firewalld
+
+
+### Install firewalld
+
+
+```
+## on centos/redhat firewalld should installed
+systemctl status firewalld
+
+## if not, just do it 
+dnf install -y firewalld
+
+```
+
+### Is firewalld running ?
+```
+## is it set to enabled ?
+systemctl status firewalld 
+firewall-cmd --state
+```
+
+### Command to control firewalld 
+  
+  * firewall-cmd 
+
+### Best way to add a new rule 
+```
+## Step1: do it persistent -> written to disk 
+firewall-cmd --add-port=82/tcp --permanent  
+
+## Step 2: + reload firewall 
+firewall-cmd --reload 
+```
+
+### Zones documentation 
+
+man firewalld.zones 
+
+### Zones available 
+
+```
+firewall-cmd --get-zones 
+block dmz drop external home internal public trusted work
+```
+
+### Active Zones 
+
+```
+firewall-cmd --get-active-zones
+```
+
+### Show information about all zones that are used 
+```
+firewall-cmd --list-all 
+firewall-cmd --list-all-zones 
+```
+
+
+### Add Interface to Zone ~ Active Zone 
+
+```
+firewall-cmd --zone=public --add-interface=enp0s3 --permanent 
+firewall-cmd --reload 
+firewall-cmd --get-active-zones 
+public
+  interfaces: enp0s3
+
+```
+### Default Zone 
+
+```
+## if not specifically mentioned when using firewall-cmd
+## .. add things to this zone 
+firewall-cmd --get-default-zone
+public
+
+```
+
+### Show services 
+```
+firewall-cmd --get-services
+firewall-cmd --info-service=ssh
+## Mit description
+firewall-cmd --info-service=ssh --verbose 
+```
+
+### What ports a opened in a service 
+
+```
+## Example ssh 
+cd /usr/lib/firewalld/services 
+cat ssh.xml 
+```
+
+### Adding/Removing a service (Variante 1: nicht so schön)
+
+```
+firewall-cmd --permanent --zone=public --add-service=ssh
+firewall-cmd --reload 
+firewall-cmd --permanent --zone=public --remove-service=ssh
+firewall-cmd --reload 
+```
+
+### Arbeiten mit runtime und permanenter config (für service) 
+
+```
+## nur für runtime setzen 
+firewall-cmd --zone=public --add-service=http
+## nur die runtime anzeigen
+firewall-cmd --list-all
+## nur die permanente konfiguration anzeigen
+firewall-cmd --list-all --permanent
+## Das wieder laden, was in der Konfiguration steht 
+firewall-cmd --reload
+```
+
+### Service aktivieren und persistieren 
+
+```
+firewall-cmd --add-service=http --zone=public
+## runtime
+firewall-cmd --list-all
+## permanent
+firewall-cmd --list-all --permanent
+## runtime-to-permanent
+firewall-cmd --runtime-to-permanent
+
+```
+
+```
+## firewall-cmd --permanent --zone=public --remove-service=ssh
+```
+
+
+
+### Add/Remove ports 
+```
+## add port
+firewall-cmd --add-port=82/tcp --zone=public --permanent
+firewall-cmd --reload
+
+## remove port
+firewall-cmd --remove-port=82/tcp --zone=public --permanent
+firewall-cmd --reload
+```
+
+### Enable / Disabled icmp 
+```
+firewall-cmd --get-icmptypes
+## none present yet 
+firewall-cmd --zone=public --add-icmp-block-inversion --permanent
+firewall-cmd --reload
+```
+
+### Working with rich rules 
+```
+## Documentation 
+## man firewalld.richlanguage
+
+## throttle connectons 
+firewall-cmd --permanent --zone=public --add-rich-rule='rule family=ipv4 source address=10.0.50.10/32 service name=http log level=notice prefix="firewalld rich rule INFO:   " limit value="100/h" accept' 
+firewall-cmd --reload # 
+firewall-cmd --zone=public --list-all
+
+## port forwarding 
+firewall-cmd --get-active-zones
+firewall-cmd --zone=public --list-all
+firewall-cmd --permanent --zone=public --add-rich-rule='rule family=ipv4 source address=10.0.50.10 forward-port port=42343 protocol=tcp to-port=22'
+firewall-cmd --reload 
+firewall-cmd --zone=public --list-all
+firewall-cmd --remove-service=ssh --zone=public
+
+## 
+
+
+## list only the rich rules 
+firewall-cmd --zone=public --list-rich-rules
+
+## persist all runtime rules 
+firewall-cmd --runtime-to-permanent
+
+
+
+
+```
+
+
+### References 
+
+  * https://www.ispcolohost.com/2016/07/25/blocking-outgoing-ports-with-firewalld/
+  * https://www.linuxjournal.com/content/understanding-firewalld-multi-zone-configurations#:~:text=Going%20line%20by%20line%20through,or%20source%20associated%20with%20it.
+  * https://www.answertopia.com/ubuntu/basic-ubuntu-firewall-configuration-with-firewalld/
+
+### journalctl
+
+
+### Show all boots 
+
+``` 
+ journalctl --list-boots
+ 0 3c3cf780186642ae9741b3d3811e95da Tue 2020-11-24 14:29:44 CET▒<80><94>T>
+lines 1-1/1 (END)
+```
+
+### Show boot log 
+
+```
+journalctl -b 
+```
+
+
+### Journal persistent 
+
+  * Normalerweise (auf den meisten Systemen), überlebt das Journal kein Reboot 
+ 
+```
+## persistent setzen
+## Achtung: in /etc/systemd/journald.conf muss Storage=auto gesetzt sein
+## Dies ist auch der Default - Fall 
+## Achtung Achtung: Alle gezeigten Einträge mit # am Anfang sind die Default-Werte (in journald.conf) 
+mkdir /var/log/journal 
+systemctl restart systemd-journal-flush.service
+systemctl restart systemd-journald.service 
+```
+
+### Restrict how much is logged / data 
+
+```
+## in /etc/systemd/journald.conf 
+SystemMaxUse=1G 
+```
+
+### journalctl 
+
+```
+journalctl -u sshd 
+
+## Nicht von Anfang, sondern die letzten Zeilen anzeigen 
+journalctl -eu sshd
+```
+
+### journalctl - ausgabe json 
+
+```
+## sehr schön um alle felder zu sehen 
+journalctl -o json-pretty 
+```
+
+### journalctl - konkreten Prozess anzeigen 
+
+```
+journalctl _PID=5
+```
+
+### journalctl - was gibt es für Felder 
+
+```
+journalctl -o json-pretty 
+journalctl -u sshd.service -o json-pretty
+```
+
+
+### journalctl - mit Zeitangaben 
+
+```
+## alles seit gestern 
+journalctl --since yesterday 
+journalctl --since now 
+journalctl --since today
+## mit datum -> hier wichtig, dass richtige format
+## Mindestens Tag oder Tag und Uhrzeit (ohne sekunden)
+## nur Stunde geht nicht
+journalctl --since "2022-08-17 00:05"
+
+## bis heute 09:45 
+journalctl --since yesterday --until "09:45"
+```
+
+### journalctl - immer die neuesten Infos ausgeben (wie bei tail -f) 
+
+```
+journalctl -f -u apache2.service 
+```
+
+### Help-pages 
+
+```
+man journalctl
+man systemd.journal-fields
+```
+
+
+
+### Automatische Installation mit kickstart
+
+
+### After installation, you will find a kickstart in /root
+
+```
+cd /root
+```
+
+```
+ls -la ana*
+-rw-------. 1 root root 864 21. Nov 14:05 anaconda-ks.cfg
+```
+
+### Use it for it installation 
+
+```
+## Adjust boot-entry for installation (after bootup of installation iso)
+kernel vmlinuz inst.ks=http://10.32.5.1/mnt/archive/RHEL-7/7.x/Server/x86_64/kickstarts/ks.cfg
+```
+
+
+### Referenz:
+
+  * https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/7/html/installation_guide/sect-kickstart-howto#sect-kickstart-installation-starting-automatic
+
+### Hostname setzen/abfragen
+
+
+```
+## Abfragen 
+hostnamectl
+hostnamectl set-hostname centos4.training.local  
+hostnamectl 
+## Trick für prompt - ist in der aktuellen, erst nach neueinloggen/bzw. neuer bash aktiv 
+su - root # bzw. su - benutzer 
+```
 
 ## Distributionen 
 
@@ -1583,8 +2830,8 @@ journalctl -b
 ## Dies ist auch der Default - Fall 
 ## Achtung Achtung: Alle gezeigten Einträge mit # am Anfang sind die Default-Werte (in journald.conf) 
 mkdir /var/log/journal 
-systemctl restart systemd-journal-flush.service 
-
+systemctl restart systemd-journal-flush.service
+systemctl restart systemd-journald.service 
 ```
 
 ### Restrict how much is logged / data 
@@ -1597,7 +2844,6 @@ SystemMaxUse=1G
 ### journalctl 
 
 ```
-## ubuntu
 journalctl -u sshd 
 
 ## Nicht von Anfang, sondern die letzten Zeilen anzeigen 
@@ -2165,18 +3411,6 @@ localectl # locales konfigurieren
 
 ## Systemadministration 
 
-### Hostname setzen/abfragen
-
-
-```
-## Abfragen 
-hostnamectl
-hostnamectl set-hostname centos4.training.local  
-hostnamectl 
-## Trick für prompt - ist in der aktuellen, erst nach neueinloggen/bzw. neuer bash aktiv 
-su - root # bzw. su - benutzer 
-```
-
 ### ssh absichern
 
 
@@ -2441,6 +3675,8 @@ dnf -y upgrade
 
 ```
 dnf list
+## weitere Felder anzeigen 
+dnf list --all 
 ```
 
 ### Installierte Pakete anzeigen 
@@ -2473,6 +3709,12 @@ dnf search mariadb
 
 ```
 dnf info mariadb
+```
+
+### In welchem Paket is ein Programm 
+
+```
+dnf whatprovides ping
 ```
 
 ### Archive runterladen und entpacken
@@ -2619,10 +3861,9 @@ dd if=mbr.img bs=512 count=1 of=/dev/sda
 systemctl status firewalld
 
 ## if not, just do it 
-yum install firewalld
+dnf install -y firewalld
 
 ```
-
 
 ### Is firewalld running ?
 ```
@@ -2690,7 +3931,10 @@ public
 
 ### Show services 
 ```
-firewall-cmd --get-services 
+firewall-cmd --get-services
+firewall-cmd --info-service=ssh
+## Mit description
+firewall-cmd --info-service=ssh --verbose 
 ```
 
 ### What ports a opened in a service 
@@ -2701,7 +3945,7 @@ cd /usr/lib/firewalld/services
 cat ssh.xml 
 ```
 
-### Adding/Removing a service 
+### Adding/Removing a service (Variante 1: nicht so schön)
 
 ```
 firewall-cmd --permanent --zone=public --add-service=ssh
@@ -2709,6 +3953,38 @@ firewall-cmd --reload
 firewall-cmd --permanent --zone=public --remove-service=ssh
 firewall-cmd --reload 
 ```
+
+### Arbeiten mit runtime und permanenter config (für service) 
+
+```
+## nur für runtime setzen 
+firewall-cmd --zone=public --add-service=http
+## nur die runtime anzeigen
+firewall-cmd --list-all
+## nur die permanente konfiguration anzeigen
+firewall-cmd --list-all --permanent
+## Das wieder laden, was in der Konfiguration steht 
+firewall-cmd --reload
+```
+
+### Service aktivieren und persistieren 
+
+```
+firewall-cmd --add-service=http --zone=public
+## runtime
+firewall-cmd --list-all
+## permanent
+firewall-cmd --list-all --permanent
+## runtime-to-permanent
+firewall-cmd --runtime-to-permanent
+
+```
+
+```
+## firewall-cmd --permanent --zone=public --remove-service=ssh
+```
+
+
 
 ### Add/Remove ports 
 ```
@@ -3127,10 +4403,9 @@ yum whatprovides sealert
 systemctl status firewalld
 
 ## if not, just do it 
-yum install firewalld
+dnf install -y firewalld
 
 ```
-
 
 ### Is firewalld running ?
 ```
@@ -3198,7 +4473,10 @@ public
 
 ### Show services 
 ```
-firewall-cmd --get-services 
+firewall-cmd --get-services
+firewall-cmd --info-service=ssh
+## Mit description
+firewall-cmd --info-service=ssh --verbose 
 ```
 
 ### What ports a opened in a service 
@@ -3209,7 +4487,7 @@ cd /usr/lib/firewalld/services
 cat ssh.xml 
 ```
 
-### Adding/Removing a service 
+### Adding/Removing a service (Variante 1: nicht so schön)
 
 ```
 firewall-cmd --permanent --zone=public --add-service=ssh
@@ -3217,6 +4495,38 @@ firewall-cmd --reload
 firewall-cmd --permanent --zone=public --remove-service=ssh
 firewall-cmd --reload 
 ```
+
+### Arbeiten mit runtime und permanenter config (für service) 
+
+```
+## nur für runtime setzen 
+firewall-cmd --zone=public --add-service=http
+## nur die runtime anzeigen
+firewall-cmd --list-all
+## nur die permanente konfiguration anzeigen
+firewall-cmd --list-all --permanent
+## Das wieder laden, was in der Konfiguration steht 
+firewall-cmd --reload
+```
+
+### Service aktivieren und persistieren 
+
+```
+firewall-cmd --add-service=http --zone=public
+## runtime
+firewall-cmd --list-all
+## permanent
+firewall-cmd --list-all --permanent
+## runtime-to-permanent
+firewall-cmd --runtime-to-permanent
+
+```
+
+```
+## firewall-cmd --permanent --zone=public --remove-service=ssh
+```
+
+
 
 ### Add/Remove ports 
 ```
@@ -3419,6 +4729,14 @@ podman exec -it mycontainer bash
 
  * Zeigt an, obwohl selinux aktiviert und wie
 
+### getenforce/ setenforce -> auf permissive setzen 
+
+```
+getenforce
+setenforce 0
+sestatus 
+```
+
 ### Modi 
 
  * disabled 
@@ -3436,15 +4754,119 @@ podman exec -it mycontainer bash
 ls -laZ 
 ```
 
-### Für nächsten Boot Kontext-Labels neu setzen 
+### Für nächsten Boot Context-Labels neu setzen 
 
 ```
 ## als root
 cd / 
 touch .autorelabel 
 reboot
-## Achtung relabeln kann dauern !!! durchaus 5 Minuten 
+## Achtung relabeln kann dauern !!! durchaus 5 Minuten
 ```
+
+```
+## Example 
+cd /var/www/html
+chcon -t var_t
+ welt.html
+ls  -laZ welt.html
+cd / 
+touch .autorelabel 
+reboot 
+```
+
+### Exercise SELinux 
+
+#### Change context and restore it 
+```
+## Requirements - selinux must be enabled
+## and auditd must run 
+## find out 
+getenforce 
+systemctl status auditd
+
+cd /var/www/html
+echo "hallo welt" > welt.html 
+## Dann im browser aufrufen
+## z.B. 192.168.56.103/welt.html 
+
+chcon -t var_t welt.html
+## includes context from welt.html 
+ls -laZ welt.html
+## when enforcing fehler beim aufruf im Browser 
+
+## You can find log entries like so
+cat /var/log/audit/audit.log
+## show all entries caused by executable httpd 
+ausearch -c httpd 
+
+## herstellen auf basis der policies 
+restorecon -vr /var/www/html 
+```
+
+#### Analyze 
+
+```
+## sesearch is needed,
+## install if not present
+dnf whatprovides sesearch
+dnf install setools-console
+```
+
+
+```
+## Under which type/domain does httpd run 
+ps auxZ | grep httpd
+
+## What is the context of the file 
+ls -Z /var/www/html/welt.html 
+
+## So is http_t - domain allowed to access ?
+sesearch --allow --source httpd_t --target httpd_sys_content_t --class file
+sesearch -A -s httpd_t -t httpd_sys_content_t -C file 
+## Yes !
+## output
+allow httpd_t httpd_sys_content_t:file { lock ioctl read getattr open
+};
+allow httpd_t httpdcontent:file { create link open append rename write
+ioctl lock getattr unlink setattr read }; [ ( httpd_builtin_scripting
+&& httpd_unified && httpd_enable_cgi ) ]:True
+...
+## so let's check
+echo "<html><body>hello</body></html>" > /var/www/html/index.html
+chmod 775 /var/www/html/index.html
+## open in browser:
+## e.g.
+## http://<yourip>
+## you should get an output -> hello ;o)
+## Now change the type of the file
+## ONLY changes temporarily
+## NEXT restorecon breaks it.
+
+chcon --type var_t /var/www/html/index.html
+ls -Z /var/www/html/index.html
+## open in browser again
+## http://<yourip>
+## NOW -> you should have a permission denied
+## Why ? -> var_t is not one of the context the webserver domain
+(http_t) is not authorized to connect to
+## Doublecheck
+sesearch --allow --source httpd_t --target var_t --class file
+## -> no output here -> no access
+## Restore again
+restorecon -v /var/www/html/index.html
+## output
+## Relabeled /var/www/html/index.html from
+unconfined_u:object_r:var_t:s0 to
+unconfined_u:object_r:httpd_sys_content_t:s0
+ls -Z /var/www/html/index.html
+## output
+unconfined_u:object_r:httpd_sys_content_t:s0 /var/www/html/index.html
+## open in browser again
+## http://<yourip>
+## Now testpage works again
+```
+
 
 ## Tools/Verschiedens 
 
