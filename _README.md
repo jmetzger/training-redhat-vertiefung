@@ -21,8 +21,10 @@
      * [SELinux Policy für Postgresql17 - Variante 2 - besser](#selinux-policy-für-postgresql17---variante-2---besser)
      * [SELinux Domain (Apache erlauben) auf permissive](#selinux-domain-apache-erlauben-auf-permissive)
    
- 1. firewalld
+ 1. firewalld / network (nmcli/nmtui) 
      * [firewalld](#firewalld)
+     * [nmcli](#nmcli)
+     * [Dokumentation nmcli von Redhat](https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/7/html/networking_guide/sec-configuring_ip_networking_with_nmcli#permanently-configuring-a-device-as-unmanaged-in-networkmanager)
 
  1. systemctl / journalctl
      * [journalctl](#journalctl)
@@ -32,6 +34,13 @@
 
  1. Systemadministration 
      * [Hostname setzen/abfragen](#hostname-setzenabfragen)
+   
+ 1. lvm
+    * [LVM verwenden](lvm.md)
+    * [LVM RHEL root-filesystem erweitern](lvm-rhel-root-erweitern.md)
+   
+ 1. Dienste debuggen
+     * [Dienste debuggen](#dienste-debuggen)
 
 ## Backlog 
 
@@ -94,8 +103,6 @@
      * [Rsyslog](#rsyslog)
      * [Journal analysieren](#journal-analysieren)
      * [Logrotate](#logrotate)
-  1. Dienste debuggen
-     * [Dienste debuggen](#dienste-debuggen)
   1. Variablen
      * [Setzen und verwenden von Variablen](#setzen-und-verwenden-von-variablen)
   1. Dienste/Runlevel(Targets verwalten) 
@@ -1247,6 +1254,75 @@ firewall-cmd --runtime-to-permanent
   * https://www.linuxjournal.com/content/understanding-firewalld-multi-zone-configurations#:~:text=Going%20line%20by%20line%20through,or%20source%20associated%20with%20it.
   * https://www.answertopia.com/ubuntu/basic-ubuntu-firewall-configuration-with-firewalld/
 
+### nmcli
+
+
+### Verbindungen anzeigen 
+
+```
+nmcli connection show
+## or 
+nmcli conn show 
+```
+
+### Netzwerk-Interface statisch auf Server neu einrichten (server 2)
+
+```
+## muss in der Liste sichtbar sein 
+nmcli con add type ethernet con-name enp0s9 ifname enp0s9 ipv4.method manual ipv4.addresses 192.168.1.2/24
+nmcli con mod enp0s9 autoconnect yes
+
+## verbindung neu hochziehen
+nmcli con up enp0s9
+
+## verbindungseigenschaften anzeigen
+nmcli con show 
+
+```
+
+### Netzwerk-Interface statisch auf Server neu einrichten (server 3)
+
+```
+## muss in der Liste sichtbar sein 
+nmcli con add type ethernet con-name enp0s9 ifname enp0s9 ipv4.method manual ipv4.addresses 192.168.1.3/24
+nmcli con mod enp0s9 autoconnect yes
+
+## verbindung neu hochziehen
+nmcli con up enp0s9
+
+## verbindungseigenschaften anzeigen
+nmcli con show 
+
+```
+
+### Netzwerk-Interface modifizieren (server 3) 
+
+```
+## muss in der Liste sichtbar sein 
+nmcli con add type ethernet con-name enp0s9 ifname enp0s9 ipv4.method manual ipv4.addresses 192.168.1.3/24
+nmcli con mod enp0s9 autoconnect yes
+
+## verbindung neu hochziehen
+nmcli con up enp0s9
+
+## verbindungseigenschaften anzeigen
+nmcli con show 
+
+## is ip gesetzt ?
+ip a
+
+```
+
+
+### Ref:
+
+  * https://www.howtoforge.de/anleitung/wie-man-eine-statische-ip-adresse-unter-centos-8-konfiguriert/
+  * https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/7/html/networking_guide/sec-configuring_ip_networking_with_nmcli#permanently-configuring-a-device-as-unmanaged-in-networkmanager
+
+### Dokumentation nmcli von Redhat
+
+  * https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/7/html/networking_guide/sec-configuring_ip_networking_with_nmcli#permanently-configuring-a-device-as-unmanaged-in-networkmanager
+
 ### journalctl
 
 
@@ -1383,6 +1459,70 @@ hostnamectl set-hostname centos4.training.local
 hostnamectl 
 ## Trick für prompt - ist in der aktuellen, erst nach neueinloggen/bzw. neuer bash aktiv 
 su - root # bzw. su - benutzer 
+```
+
+### Dienste debuggen
+
+
+### Walkthrough 
+
+```
+## Dienst startet nicht / nach Ausführen von systemctl restart wird Fehlermeldung ausgegeben
+systemctl restart mariadb.service 
+
+## Schritt 1 : status -> was sagen die logs (letzte 10 Zeilen) 
+systemctl status mariadb.service 
+
+## Nicht fündig-> Schritt 2:
+journalctl -eu mariadb.service
+
+## Nicht fündig -> Schritt 3:
+## -e springt ans Ende des Pages
+journalctl -e -u mariadb.service 
+
+## Nicht fündig -> Schritt 4:
+## Spezifisches Log von Dienst suchen 
+## und evtl. LogLevel von Dienst hochsetzen
+## z.B. bei mariadb (durch Internetrecherche herausfinden) 
+less /var/log/mariadb/mariadb.log 
+## oder schneller
+## Zeige alle Zeilen mit dem Wort error an (case insensitive) 
+## also auch z.B. ERROR 
+cat /var/log/mariadb/mariadb.log | grep -i error
+
+
+## Nicht fündig -> Schritt 5
+## Allgemeines Log
+## REdhat/Centos 
+/var/log/messages 
+```
+
+### Wie verfahren bei SystemV 
+
+```
+Wie bei walkthrough aber ab Schritt 4
+```
+
+### Find error in logs quickly
+
+```
+cd /var/log/mysql 
+## -i = case insensitive // egal ob gross- oder kleingeschrieben
+cat error.log | grep -i error
+```
+
+### Found wrong config-value, what now ?
+
+```
+## You know the wrong config value, but not 
+## where it is (in which file)
+## assuming gummitulpe is the wrong config value 
+grep -r gummitulpe /etc
+## oder
+grep -inr gummitulpe /etc
+
+## Ausgabe
+/etc/my.cnf.d/mariadb-server.cnf:gummitulpe=/nix
 ```
 
 ## Distributionen 
@@ -2781,6 +2921,8 @@ cat error.log | grep -i error
 ## where it is (in which file)
 ## assuming gummitulpe is the wrong config value 
 grep -r gummitulpe /etc
+## oder
+grep -inr gummitulpe /etc
 
 ## Ausgabe
 /etc/my.cnf.d/mariadb-server.cnf:gummitulpe=/nix
@@ -2926,70 +3068,6 @@ vi output_log
 ```
 systemctl start logrotate.service
 ls -la /var/log/output*
-```
-
-## Dienste debuggen
-
-### Dienste debuggen
-
-
-### Walkthrough 
-
-```
-## Dienst startet nicht / nach Ausführen von systemctl restart wird Fehlermeldung ausgegeben
-systemctl restart mariadb.service 
-
-## Schritt 1 : status -> was sagen die logs (letzte 10 Zeilen) 
-systemctl status mariadb.service 
-
-## Nicht fündig-> Schritt 2:
-journalctl -eu mariadb.service
-
-## Nicht fündig -> Schritt 3:
-## -e springt ans Ende des Pages
-journalctl -e -u mariadb.service 
-
-## Nicht fündig -> Schritt 4:
-## Spezifisches Log von Dienst suchen 
-## und evtl. LogLevel von Dienst hochsetzen
-## z.B. bei mariadb (durch Internetrecherche herausfinden) 
-less /var/log/mariadb/mariadb.log 
-## oder schneller
-## Zeige alle Zeilen mit dem Wort error an (case insensitive) 
-## also auch z.B. ERROR 
-cat /var/log/mariadb/mariadb.log | grep -i error
-
-
-## Nicht fündig -> Schritt 5
-## Allgemeines Log
-## REdhat/Centos 
-/var/log/messages 
-```
-
-### Wie verfahren bei SystemV 
-
-```
-Wie bei walkthrough aber ab Schritt 4
-```
-
-### Find error in logs quickly
-
-```
-cd /var/log/mysql 
-## -i = case insensitive // egal ob gross- oder kleingeschrieben
-cat error.log | grep -i error
-```
-
-### Found wrong config-value, what now ?
-
-```
-## You know the wrong config value, but not 
-## where it is (in which file)
-## assuming gummitulpe is the wrong config value 
-grep -r gummitulpe /etc
-
-## Ausgabe
-/etc/my.cnf.d/mariadb-server.cnf:gummitulpe=/nix
 ```
 
 ## Variablen
@@ -4141,13 +4219,10 @@ ip a
 ```
 
 
-
-
-
-
 ### Ref:
 
   * https://www.howtoforge.de/anleitung/wie-man-eine-statische-ip-adresse-unter-centos-8-konfiguriert/
+  * https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/7/html/networking_guide/sec-configuring_ip_networking_with_nmcli#permanently-configuring-a-device-as-unmanaged-in-networkmanager
 
 ### Scannen mit nmap
 
