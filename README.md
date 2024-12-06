@@ -12,6 +12,7 @@
      * [Modules-Overview-Example](modules/overview.md)
      * [Upgrade Major-Version do-release-upgrade / leapp](major-upgrade-rhel-ubuntu.md)
      * [Walkthrough Leapp Upgrade RHEL 8.10 -> 9.4](upgrade/in-place/step-by-step.md)
+     * [dnf automatic](dnf-automatic.md)
 
  1. SELinux
      * [SELinux Überblick und Übung](selinux.md)
