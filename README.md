@@ -37,6 +37,10 @@
    
  1. lvm
     * [LVM verwenden](lvm.md)
+    * [LVM RHEL root-filesystem erweitern](lvm-rhel-root-erweitern.md)
+   
+ 1. Dienste debuggen
+     * [Dienste debuggen](debug-service.md)
 
 ## Backlog 
 
@@ -99,8 +103,6 @@
      * [Rsyslog](rsyslog.md)
      * [Journal analysieren](journalctl.md)
      * [Logrotate](logrotate.md)
-  1. Dienste debuggen
-     * [Dienste debuggen](debug-service.md)
   1. Variablen
      * [Setzen und verwenden von Variablen](variables.md) 
   1. Dienste/Runlevel(Targets verwalten) 
