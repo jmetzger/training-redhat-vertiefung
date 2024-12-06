@@ -54,6 +54,8 @@ cat error.log | grep -i error
 # where it is (in which file)
 # assuming gummitulpe is the wrong config value 
 grep -r gummitulpe /etc
+# oder
+grep -inr gummitulpe /etc
 
 # Ausgabe
 /etc/my.cnf.d/mariadb-server.cnf:gummitulpe=/nix
