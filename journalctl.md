@@ -39,7 +39,6 @@ SystemMaxUse=1G
 ## journalctl 
 
 ```
-# ubuntu
 journalctl -u sshd 
 
 # Nicht von Anfang, sondern die letzten Zeilen anzeigen 
