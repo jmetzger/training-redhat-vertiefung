@@ -31,7 +31,10 @@
      * [Automatische Installation mit kickstart](installation/kickstart.md)
 
  1. Systemadministration 
-     * [Hostname setzen/abfragen](hostnamectl.md) 
+     * [Hostname setzen/abfragen](hostnamectl.md)
+   
+ 1. lvm
+    * [LVM verwenden](lvm.md)
 
 ## Backlog 
 
